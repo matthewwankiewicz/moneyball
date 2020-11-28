@@ -1,5 +1,5 @@
 ---
-title: "moneyball"
+title: "Was the basis of Moneyball Correct?"
 author: "Matthew Wankiewicz"
 date: "26/11/2020"
 bibliography: references.bib
@@ -21,6 +21,8 @@ all_years <- read_csv("all_years.csv")
 ```
 
 ## Introduction
+
+In 2003, Michael Lewis released a book called Moneyball ^[Moneyball was actually part of the reason I decided to get into statistics. Applying baseball with numbers seemed like an absolute win to me]. Moneyball is the story of the Oakland Athletics who, after losing players to the richer teams in the league, decided to focus on using the misfits of baseball to try to win a World Series. These "misfits" were players who never received support from teams because their traditional stats didn't look good but they excelled in the stats that mattered.
 
 This data analysis was conducted using R (@citeR), and in particular the packages Tidyverse (@citeTidyverse) and Lahman (@citeLahman) and was compiled using R markdown (@citermarkdown).
 
