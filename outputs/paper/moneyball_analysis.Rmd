@@ -1,0 +1,69 @@
+---
+title: "moneyball"
+author: "Matthew Wankiewicz"
+date: "26/11/2020"
+bibliography: references.bib
+abstract: "Abstract goes here"
+output: pdf_document
+---
+**Keywords**: Moneyball, Baseball, Sabermetrics, Logistic Regression
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+knitr::opts_chunk$set(warning = F)
+library(tidyverse)
+library(Lahman)
+```
+
+
+```{r, message=F}
+all_years <- read_csv("all_years.csv")
+```
+
+## Introduction
+
+This data analysis was conducted using R (@citeR), and in particular the packages Tidyverse (@citeTidyverse) and Lahman (@citeLahman) and was compiled using R markdown (@citermarkdown).
+
+## Data
+
+```{r plot1, echo=F, fig.cap="The increase in Payroll over the Years"}
+all_years %>% 
+  ggplot(aes(x = yearID, y = payroll, color = playoffs)) +
+  geom_point()
+```
+
+
+```{r woba, fig.cap="Relationship between wOBA and Wins"}
+all_years %>% 
+  ggplot(aes(W, wOBA, color = playoffs)) + 
+  geom_point() 
+```
+
+```{r fip, fig.cap="Relationship between FIP and Wins"}
+all_years %>% 
+  ggplot(aes(W, FIP, color = playoffs)) + 
+  geom_point() 
+```
+
+
+## Model
+
+```{r model}
+all_years[is.na(all_years)] <- 0
+all_years <- all_years %>% 
+  mutate(playoffs = ifelse(LgWin == "Y", 1,
+                           ifelse(DivWin == "Y", 1, 
+                                  ifelse(WCWin == "Y", 1, 0))))
+
+  
+model <- glm(playoffs ~ HR + ERA + `Est. Payroll`,
+             data = all_years, family = binomial())
+summary(model)
+```
+
+
+## Discussion
+
+## Weaknesses and Next Steps
+
+## References
