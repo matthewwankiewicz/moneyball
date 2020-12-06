@@ -3,7 +3,7 @@ title: "Was the basis of Moneyball Correct?"
 author: "Matthew Wankiewicz"
 date: "26/11/2020"
 bibliography: references.bib
-abstract: "Abstract goes here"
+abstract: "The book moneyball highlighted a statisitcs revolution that was occuring in baseball in the early 2000's. In this report, I will use logistic regression to determine whether the advanced stats that stemmed from this revolution are useful for predicting a team's success. According to the model I still have to do this. The model correctly predicted that (insert) teams would make the playoffs using these metrics. "
 output: pdf_document
 ---
 **Keywords**: Moneyball, Baseball, Sabermetrics, Logistic Regression
@@ -11,8 +11,12 @@ output: pdf_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = F)
 knitr::opts_chunk$set(warning = F)
+#install.packages("tidyverse")
 library(tidyverse)
+#install.packages("Lahman")
 library(Lahman)
+#install.packages("blscrapeR")
+library(blscrapeR)
 ```
 
 
@@ -30,7 +34,7 @@ This data analysis was conducted using R (@citeR), and in particular the package
 
 ```{r plot1, echo=F, fig.cap="The increase in Payroll over the Years"}
 all_years %>% 
-  ggplot(aes(x = yearID, y = payroll, color = playoffs)) +
+  ggplot(aes(x = yearID, y = log(payroll), color = playoffs)) +
   geom_point()
 ```
 
@@ -51,17 +55,35 @@ all_years %>%
 ## Model
 
 ```{r model}
-all_years[is.na(all_years)] <- 0
-all_years <- all_years %>% 
-  mutate(playoffs = ifelse(LgWin == "Y", 1,
-                           ifelse(DivWin == "Y", 1, 
-                                  ifelse(WCWin == "Y", 1, 0))))
-
-  
-model <- glm(playoffs ~ HR + ERA + `Est. Payroll`,
+model <- glm(playoffs ~ wOBA + FIP + log(payroll) + BA
+             + ERA,
              data = all_years, family = binomial())
 summary(model)
+coefficients <- broom::tidy(model)
+coefficients %>% 
+  knitr::kable(digits = 4) %>% 
+  kableExtra::kable_styling()
 ```
+
+Table \@ref(tab:model) shows us the coefficients from our logistic regression model. We see that teams with a higher wOBA have better chances of making the playoffs, along with team with higher payrolls. This makes sense because when teams will attempt to spend the most money to get the best players and when they score more runs they'll win more games. We can also see that the coefficient for FIP is negative, this does not mean that FIP brings down the chances of making the playoffs. The best values for FIP are the ones closer to 0 and as the value begins to increase, it shows that the pitcher is not that good. What the coefficient is telling us is that lower FIP's give higher chances of making the playoffs while higher FIP's bring down the chances of making the playoffs.
+
+```{r cooks}
+plot(model, which = 4)
+```
+
+Figure \@ref(fig:cooks) shows us the observed cook's distances for the model. Cook's distance gives us the difference between the ... . We see that these cook's distances are very low (most are under 0.01), since our distances are fairly low, we can conclude that the model is fitting the data fairly well.
+
+```{r}
+all_years_predict <- all_years
+all_years_predict$estimate <- predict.glm(model, newdata = all_years,
+                                          type = "response")
+all_years_predict <- all_years_predict %>% 
+  mutate(playoffs_predict = ifelse(estimate > 0.5, 1, 0))
+
+sum(all_years_predict$playoffs)/nrow(all_years_predict)
+sum(all_years_predict$playoffs_predict)/nrow(all_years_predict)
+```
+
 
 
 ## Discussion

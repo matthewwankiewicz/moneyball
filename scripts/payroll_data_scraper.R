@@ -187,7 +187,8 @@ all_years <- all_years %>%
          OBP = round(((H+BB+HBP)/(AB+BB+HBP+SF)), digits = 3),
          SLG = round(((X1B+2*X2B+3*X3B+4*HR)/AB), digits = 3),
          wOBA = round((OBP*2 + SLG)/3, digits = 3),
-         FIP = round((13*HRA + 3*BBA - 2*SOA)/((IPouts/3)) + fip_constant, digits = 3)
+         FIP = round((13*HRA + 3*BBA - 2*SOA)/((IPouts/3)) + fip_constant, digits = 3),
+         BA = round(H/AB, digits = 3)
 )
 
 
