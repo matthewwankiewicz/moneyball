@@ -1,5 +1,5 @@
 ---
-title: ""
+title: "Logistic Regression shows that Moneyball was right"
 author: "Matthew Wankiewicz"
 date: "26/11/2020"
 bibliography: references.bib
@@ -28,7 +28,7 @@ all_years <- read_csv("all_years.csv")
 
 ## Introduction
 
-In 2003, Michael Lewis released a book called Moneyball ^[Moneyball was actually part of the reason I decided to get into statistics. Applying baseball with numbers seemed like an absolute win to me]. Moneyball is the story of the Oakland Athletics who, after losing players to the richer teams in the league, decided to focus on using the misfits of baseball to try to win a World Series. These "misfits" were players who never received support from teams because their traditional stats didn't look good but they excelled in the stats that mattered.
+In 2003, Michael Lewis wrote a book called Moneyball ^[Moneyball was actually the main reason I decided to get into statistics. Applying baseball with numbers seemed like an absolute win to me]. Moneyball is the story of the Oakland Athletics who, after losing players to the richer teams in the league, decided to focus on using the misfits of baseball to try to win a World Series. These "misfits" were players who never received support from teams because their traditional stats didn't look good but they excelled in the stats that mattered.
 
 In order to test if Moneyball's basis was correct, I will be using logistic regression to predict whether or not a team will make the playoffs. The seasons that I will analyze go all the way back to 1920, with some missing years in the 70s because of missing values in the contract data. In order to predict if a team makes the playoffs or not, the variables I plan to use are the team's payroll, the team's batting average (BA), the team's earned run average (ERA), their weighted on base average (wOBA) and lastly their fielding independent pitching (FIP). These stats may sound scary but they are fairly simple and will be exaplined in the data section below. 
 
