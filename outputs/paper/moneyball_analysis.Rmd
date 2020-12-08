@@ -1,12 +1,14 @@
 ---
-title: "Was the basis of Moneyball Correct?"
+title: ""
 author: "Matthew Wankiewicz"
 date: "26/11/2020"
 bibliography: references.bib
-abstract: "The book moneyball highlighted a statisitcs revolution that was occuring in baseball in the early 2000's. In this report, I will use logistic regression to determine whether the advanced stats that stemmed from this revolution are useful for predicting a team's success. According to the model I still have to do this. The model correctly predicted that (insert) teams would make the playoffs using these metrics. "
+abstract: "The book moneyball highlighted a statisitcs revolution that was occuring in baseball in the early 2000's. In this report, I will use logistic regression to determine whether the advanced stats that stemmed from this revolution are useful for predicting a team's success. According to the model (I still have to do this). The model correctly predicted that (insert) teams would make the playoffs using these metrics. "
 output: pdf_document
 ---
 **Keywords**: Moneyball, Baseball, Sabermetrics, Logistic Regression
+
+Code supporting this analysis can be found at: https://github.com/matthewwankiewicz/moneyball
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = F)
@@ -28,7 +30,12 @@ all_years <- read_csv("all_years.csv")
 
 In 2003, Michael Lewis released a book called Moneyball ^[Moneyball was actually part of the reason I decided to get into statistics. Applying baseball with numbers seemed like an absolute win to me]. Moneyball is the story of the Oakland Athletics who, after losing players to the richer teams in the league, decided to focus on using the misfits of baseball to try to win a World Series. These "misfits" were players who never received support from teams because their traditional stats didn't look good but they excelled in the stats that mattered.
 
-This data analysis was conducted using R (@citeR), and in particular the packages Tidyverse (@citeTidyverse) and Lahman (@citeLahman) and was compiled using R markdown (@citermarkdown).
+In order to test if Moneyball's basis was correct, I will be using logistic regression to predict whether or not a team will make the playoffs. The seasons that I will analyze go all the way back to 1920, with some missing years in the 70s because of missing values in the contract data. In order to predict if a team makes the playoffs or not, the variables I plan to use are the team's payroll, the team's batting average (BA), the team's earned run average (ERA), their weighted on base average (wOBA) and lastly their fielding independent pitching (FIP). These stats may sound scary but they are fairly simple and will be exaplined in the data section below. 
+
+The data collected is from the `Lahman` package in R (@citeLahman). The `Lahman` package contains yearly player statistics going all the way back to the late 1800s. For this project, I will only use the data from 1920 and onward because those years have the most observations for stats like payroll data. In the `Lahman` package there are many different datasets present, for this project I will be using the `Teams` dataset. In order to collect the payroll data, I created a scraper that collected yearly Team stats from Baseball Reference (@citebbref). The scraper takes the data from each year and saved it into a larger dataset ^[This scraper can be found in the scripts folder of my GitHub repo.]. The payroll data will be crucial for my report because the basis of Moneyball is fielding the best team by using the least amount of money.
+
+This data analysis was conducted using R (@citeR), and in particular the packages Tidyverse (@citeTidyverse) and was compiled using R markdown (@citermarkdown). I have 4 sections not including the introduction. The first section covers the data I used for my report, including a few plots to show how the distributions and relationships between various stats. The next section is about the model I used, this will include a in-depth breakdown of logistic regression. Next, I will display the results of my model, this will include the coefficients of the model and an interpretation of the model, along with an application of the model to the results of the 2020 season to see how accurate its predictions are. Lastly, there is a section discussing what we learn from this model and some next steps. Was Moneyball right? Does money impact a team's ability to make the playoffs? Keep reading to find out!
+
 
 ## Data
 
@@ -58,7 +65,6 @@ all_years %>%
 model <- glm(playoffs ~ wOBA + FIP + log(payroll) + BA
              + ERA,
              data = all_years, family = binomial())
-summary(model)
 coefficients <- broom::tidy(model)
 coefficients %>% 
   knitr::kable(digits = 4) %>% 
@@ -84,7 +90,7 @@ sum(all_years_predict$playoffs)/nrow(all_years_predict)
 sum(all_years_predict$playoffs_predict)/nrow(all_years_predict)
 ```
 
-
+## Results
 
 ## Discussion
 
