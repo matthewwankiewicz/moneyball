@@ -19,6 +19,7 @@ library(tidyverse)
 library(Lahman)
 #install.packages("blscrapeR")
 library(blscrapeR)
+library(lme4)
 ```
 
 
@@ -38,6 +39,10 @@ This data analysis was conducted using R (@citeR), and in particular the package
 
 
 ## Data
+
+The data collected was from the `Lahman` package in R (@citeLahman) and Baseball-Reference (@citebbref), Fangraphs (@citefangraphs) was also used to help calculate one of the statistics. 
+
+The `Lahman` package contains the `Teams` dataset which was used for the calculation of the basic statistics along with the more advanced ones. The basic statistics used for this analysis were Batting Average, Earned Run Average, Weighted On Base Average and Fielding Independent Pitching. Batting average is the rate at which a player will get a hit, it is calculated by $Hits/Atbats$. Earned Run Average is the amount of runs a player allows, per 9 innings (1 whole game), it is calculated by $Runs/InningsPitched$. Next, we get to the advanced statistics, weighted on base average is considered to be a "better" version of batting average. wOBA was created by Tom Tango and he writes more in depth about it in "The Book" @citetango.^[The Book is seen as the best book for aspiring baseball analysts or "saberists" to get into the MLB analysis game.] wOBA is a weighted average of each of the ways a player can get on base (walking, getting a single, double, triple and a home run) and is divided by the ways a player gets a chance to hit (at bats, walks and sacrifice flies). Usually the coefficients of wOBA change by year but for this report, I used a manipulation of other advanced statistics that were described in "The Book", $(2*OBP + SLG) / 3$ ^[OBP is on base percentage, the rate a player gets on base (includes walks). SLG is slugging percentage, the total bases (TB) a player gets divided by at-bats (a single = 1 TB, double = 2, triple = 3 and Home Run = 4).] Lastly, fielding independent pitching estimates a player's run prevention if they did not have a defence, as opposed to ERA which includes defence. The equation for FIP is simple, $(13*HRA + 3*BBA - 2*SOA)/IP$ where HRA is home runs allowed, BBA is walks allowed and SOA is the number of strikeouts a player gets.
 
 ```{r plot1, echo=F, fig.cap="The increase in Payroll over the Years"}
 all_years %>% 
@@ -63,7 +68,7 @@ all_years %>%
 
 ```{r model}
 model <- glm(playoffs ~ wOBA + FIP + log(payroll) + BA
-             + ERA,
+             + ERA ,
              data = all_years, family = binomial())
 coefficients <- broom::tidy(model)
 coefficients %>% 
