@@ -191,6 +191,9 @@ all_years <- all_years %>%
          BA = round(H/AB, digits = 3)
 )
 
+all_years <- all_years %>% 
+  mutate(before_75 = ifelse(yearID < 1975, 1, 0))
 
+# write csv to be used in report
 write.csv(all_years, "outputs/paper/all_years.csv")
 

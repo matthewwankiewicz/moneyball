@@ -4,7 +4,10 @@ author: "Matthew Wankiewicz"
 date: "26/11/2020"
 bibliography: references.bib
 abstract: "The book moneyball highlighted a statisitcs revolution that was occuring in baseball in the early 2000's. In this report, I will use logistic regression to determine whether the advanced stats that stemmed from this revolution are useful for predicting a team's success. According to the model (I still have to do this). The model correctly predicted that (insert) teams would make the playoffs using these metrics. "
-output: pdf_document
+output:
+  bookdown::pdf_document2:
+    citation_package: natbib
+toc: FALSE
 ---
 **Keywords**: Moneyball, Baseball, Sabermetrics, Logistic Regression
 
@@ -17,9 +20,12 @@ knitr::opts_chunk$set(warning = F)
 library(tidyverse)
 #install.packages("Lahman")
 library(Lahman)
-#install.packages("blscrapeR")
-library(blscrapeR)
-library(lme4)
+#install.packages("cowplot")
+library(cowplot)
+#install.packages("knitr)
+library(knitr)
+#install.packages("kableExtra")
+library(kableExtra)
 ```
 
 
@@ -27,7 +33,7 @@ library(lme4)
 all_years <- read_csv("all_years.csv")
 ```
 
-## Introduction
+# Introduction
 
 In 2003, Michael Lewis wrote a book called Moneyball ^[Moneyball was actually the main reason I decided to get into statistics. Applying baseball with numbers seemed like an absolute win to me]. Moneyball is the story of the Oakland Athletics who, after losing players to the richer teams in the league, decided to focus on using the misfits of baseball to try to win a World Series. These "misfits" were players who never received support from teams because their traditional stats didn't look good but they excelled in the stats that mattered.
 
@@ -38,17 +44,40 @@ The data collected is from the `Lahman` package in R (@citeLahman). The `Lahman`
 This data analysis was conducted using R (@citeR), and in particular the packages Tidyverse (@citeTidyverse) and was compiled using R markdown (@citermarkdown). I have 4 sections not including the introduction. The first section covers the data I used for my report, including a few plots to show how the distributions and relationships between various stats. The next section is about the model I used, this will include a in-depth breakdown of logistic regression. Next, I will display the results of my model, this will include the coefficients of the model and an interpretation of the model, along with an application of the model to the results of the 2020 season to see how accurate its predictions are. Lastly, there is a section discussing what we learn from this model and some next steps. Was Moneyball right? Does money impact a team's ability to make the playoffs? Keep reading to find out!
 
 
-## Data
+# Data
 
 The data collected was from the `Lahman` package in R (@citeLahman) and Baseball-Reference (@citebbref), Fangraphs (@citefangraphs) was also used to help calculate one of the statistics. 
 
 The `Lahman` package contains the `Teams` dataset which was used for the calculation of the basic statistics along with the more advanced ones. The basic statistics used for this analysis were Batting Average, Earned Run Average, Weighted On Base Average and Fielding Independent Pitching. Batting average is the rate at which a player will get a hit, it is calculated by $Hits/Atbats$. Earned Run Average is the amount of runs a player allows, per 9 innings (1 whole game), it is calculated by $Runs/InningsPitched$. Next, we get to the advanced statistics, weighted on base average is considered to be a "better" version of batting average. wOBA was created by Tom Tango and he writes more in depth about it in "The Book" @citetango.^[The Book is seen as the best book for aspiring baseball analysts or "saberists" to get into the MLB analysis game.] wOBA is a weighted average of each of the ways a player can get on base (walking, getting a single, double, triple and a home run) and is divided by the ways a player gets a chance to hit (at bats, walks and sacrifice flies). Usually the coefficients of wOBA change by year but for this report, I used a manipulation of other advanced statistics that were described in "The Book", $(2*OBP + SLG) / 3$ ^[OBP is on base percentage, the rate a player gets on base (includes walks). SLG is slugging percentage, the total bases (TB) a player gets divided by at-bats (a single = 1 TB, double = 2, triple = 3 and Home Run = 4).] Lastly, fielding independent pitching estimates a player's run prevention if they did not have a defence, as opposed to ERA which includes defence. The equation for FIP is simple, $(13*HRA + 3*BBA - 2*SOA)/IP$ where HRA is home runs allowed, BBA is walks allowed and SOA is the number of strikeouts a player gets.
 
 ```{r plot1, echo=F, fig.cap="The increase in Payroll over the Years"}
-all_years %>% 
-  ggplot(aes(x = yearID, y = log(payroll), color = playoffs)) +
-  geom_point()
+all <- all_years %>% 
+  ggplot(aes(x = yearID, y = payroll, color = playoffs)) +
+  geom_point() +
+  labs(title = "Payroll vs Year",
+       x = "Year",
+       y = "Payroll")
+before <- all_years %>% 
+  filter(before_75 == 1) %>% 
+  ggplot(aes(x = yearID, y = payroll, color = playoffs)) +
+  geom_point() +
+  labs(title = "Payroll vs Year",
+       x = "Year",
+       y = "Payroll",
+       subtitle = "Before 1975")
+after <- all_years %>% 
+  filter(before_75 == 0) %>% 
+  ggplot(aes(x = yearID, y = payroll, color = playoffs)) +
+  geom_point() +
+  labs(title = "Payroll vs Year",
+       x = "Year",
+       y = "Payroll",
+       subtitle = "After 1975")
+bottom <- plot_grid(before, after)
+plot_grid(all, bottom, nrow = 2)
 ```
+
+Figure \@ref(fig:plot1) shows us the increase in payroll over the years, starting at 1920 and ending at 2019. We see that up until 1960 payrolls were fairly constant but after the 60s we have seen a rapid increase in payroll. We can also see colours which represent if a team made the playoffs or not (light blue representing yes and dark blue meaning no). It is clear that in most seasons, teams that spend more make the playoffs.
 
 
 ```{r woba, fig.cap="Relationship between wOBA and Wins"}
@@ -57,48 +86,77 @@ all_years %>%
   geom_point() 
 ```
 
+Figure \@ref(fig:woba) shows the relationship between wOBA and the amount of teams a win gets, along with colours representing a team's ability to make the playoffs. We see that as wOBA increases, the amount of wins increases and the number of teams making the playoffs increases as well. For the most part, it seems that if a team can get to about 87 wins in a season, they will likely make the playoffs. There were also some teams present which made the playoffs after winning less than 65 games. This occured because of dispute between the players and the league which led to a 50 day strike and led to teams winning less games in total (@cite1981)^[The players eventually returned and the playoffs continued]. 
+
 ```{r fip, fig.cap="Relationship between FIP and Wins"}
 all_years %>% 
   ggplot(aes(W, FIP, color = playoffs)) + 
   geom_point() 
 ```
 
+Figure \@ref(fig:fip) shows that having a lower FIP means that a team is going to win more games. This makes sense because if a team gives up less runs, they are more likely to outscore their opponents, leading to a win. 
 
-## Model
+# Model
 
 ```{r model}
-model <- glm(playoffs ~ wOBA + FIP + log(payroll) + BA
-             + ERA ,
+model <- glm(playoffs ~ wOBA + FIP + payroll + BA
+             + ERA + before_75,
              data = all_years, family = binomial())
 coefficients <- broom::tidy(model)
 coefficients %>% 
-  knitr::kable(digits = 4) %>% 
-  kableExtra::kable_styling()
+  kable(digits = 4,
+               caption = "Regression Model Coefficients") %>% 
+  kable_styling()
 ```
 
 Table \@ref(tab:model) shows us the coefficients from our logistic regression model. We see that teams with a higher wOBA have better chances of making the playoffs, along with team with higher payrolls. This makes sense because when teams will attempt to spend the most money to get the best players and when they score more runs they'll win more games. We can also see that the coefficient for FIP is negative, this does not mean that FIP brings down the chances of making the playoffs. The best values for FIP are the ones closer to 0 and as the value begins to increase, it shows that the pitcher is not that good. What the coefficient is telling us is that lower FIP's give higher chances of making the playoffs while higher FIP's bring down the chances of making the playoffs.
 
-```{r cooks}
+```{r cooks, fig.cap="Cook's Distance for the Model"}
 plot(model, which = 4)
 ```
 
 Figure \@ref(fig:cooks) shows us the observed cook's distances for the model. Cook's distance gives us the difference between the ... . We see that these cook's distances are very low (most are under 0.01), since our distances are fairly low, we can conclude that the model is fitting the data fairly well.
 
-```{r}
+# Results
+
+```{r result}
 all_years_predict <- all_years
 all_years_predict$estimate <- predict.glm(model, newdata = all_years,
                                           type = "response")
 all_years_predict <- all_years_predict %>% 
   mutate(playoffs_predict = ifelse(estimate > 0.5, 1, 0))
+all_years_predict <- all_years_predict %>% 
+  mutate(accuracy = ifelse(playoffs_predict == playoffs, 1, 0))
 
-sum(all_years_predict$playoffs)/nrow(all_years_predict)
-sum(all_years_predict$playoffs_predict)/nrow(all_years_predict)
+
+data <- sum(all_years_predict$playoffs)/nrow(all_years_predict)
+model_pred <- sum(all_years_predict$playoffs_predict)/nrow(all_years_predict)
+accuracy <- c("-", sum(all_years_predict$accuracy)/nrow(all_years_predict) * 100)
+type <- c("Data", "Model")
+result <- c(data, model_pred)
+props <- tibble(type, accuracy) %>% cbind(result)
+props <- props %>% 
+  mutate(result = result * 100) %>% 
+  rename("Data Type" = type,
+         "Accuracy (%)" = accuracy)
+props %>%  
+  kable(digits = 3) %>% 
+  kable_styling()
 ```
 
-## Results
+Table \@ref(tab:result) displays the proportion of teams which made the playoffs from the observed data vs the results of our model's predictions. We can see that the model is very strict with its results, only predicted about 15.6 percent of teams to make the playoffs, less than the observed 18.9 percent. 
 
-## Discussion
+We can also look at the overall accuracy of the model. In order to find the accuracy of the model, I compared the predicted results to the actual results and we find that the model succesfully predicted if a team would make the playoffs 88.8 percent of the time. These results are very significant because it shows that the model can fairly succesfully determine what a playoff team is. This also bodes well for our attempt to see if the results for the 2020 predictions will be correct.
 
-## Weaknesses and Next Steps
+# Discussion
 
-## References
+Now that the model has been created (and tested) and we have our results, what can we make of them? Well, the first major point we can see is that when using advanced statistics, we can accurately predict if a team will make the playoffs 88 percent of the time. This result is truly significant because it means that if a team put their focus on acquiring players who excel in advanced statistics but are average in the 'regular' ones, they can drastically improve their chances of making the playoffs. 
+
+When looking at our batting stats, we see that wOBA is very influential in determining a team's playoff status. Taking a quick look at Fangraphs' wOBA leaderboard from 2019^[We're going to focus on 2019 because the 2020 season was just a really small sample size] we see that 6 of the top ten players in wOBA were not in the top 10 for batting average. If teams are still evaluating players using traditional statisitics, they have a much higher chance of paying for a player who may not have a significant impact on their playoffs chances. If teams make the shift to stats like wOBA, they certainly won't be hurting their chances at making the playoffs.
+
+Next, we can also take a look at FIP, now that we know it is significant. FIP is much more difficult to evaluate compared to the traditional stats because of how it is calculated. As we saw in the data section, FIP is calculated only by true outcomes: home runs, strikeouts and walks. Since FIP only deals with these "true outcomes", it tends to overlook players who don't rely on strikeouts but instead rely on their teamates to help them out. Regardless, finding players with an above average FIP^[under about 4.2] and below average traditional is fairly simple. Once again, from fangraphs we find that there are many pitchers with high ERAs and above average FIPs. This is significant because FIP predicts success better than ERA. In a Sporting News article from 2017, John Edwards talks about a player named Michael Pineda's 2016 season. He started off the season with a high ERA but a low FIP and as the season went on, his ERA began to decrease (@citeSN). This is one of many examples where FIP outperforms ERA and this shows... 
+
+# Weaknesses and Next Steps
+
+\newpage
+# References

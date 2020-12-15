@@ -1,4 +1,4 @@
-# About this project
+# Overview of the Project
 
 This repo contains data used to create a logistic regression model to predict whether or not MLB (major league baseball) teams will make the playoffs or not. This repo was created by Matthew Wankiewicz. The purpose of this project is to determine whether or not the basis of Michael Lewis' book "Moneyball" was correct. Most of the data used is available on websites like baseball-reference.com and fangraphs.com and I will detail how I got the information.
 
