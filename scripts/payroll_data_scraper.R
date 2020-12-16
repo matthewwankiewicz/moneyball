@@ -72,21 +72,6 @@ all_years <- rbind(all_years, table81[[1]], table82[[1]], table83[[1]], table84[
                    table86[[1]], table87[[1]], table88[[1]], table89[[1]], table90[[1]], table91[[1]],
                    table92[[1]], table93[[1]], table94[[1]])
 
-# remove columns dealing with coach challenges, didnt exist until recently
-challenge_era <- rbind(table95[[1]], table96[[1]], table97[[1]],
-                       table98[[1]], table99[[1]], table100[[1]])
-
-
-
-write.csv(all_years, "all_years.csv")
-
-
-for(i in 1920:2019){
-  for(j in 1:100){
-    tab[[j]] %>% mutate(yearID = i)
-  }
-}
-
 
 test <- list(table1[[1]], table2[[1]], table3[[1]], table4[[1]], table5[[1]], table6[[1]],
              table7[[1]], table8[[1]], table19[[1]], table10[[1]], table11[[1]], table12[[1]],
@@ -188,11 +173,27 @@ all_years <- all_years %>%
          SLG = round(((X1B+2*X2B+3*X3B+4*HR)/AB), digits = 3),
          wOBA = round((OBP*2 + SLG)/3, digits = 3),
          FIP = round((13*HRA + 3*BBA - 2*SOA)/((IPouts/3)) + fip_constant, digits = 3),
-         BA = round(H/AB, digits = 3)
+         BA = round(H/AB, digits = 3),
+         BABIPA = round((HA - HRA)/(IPouts - SOA - HRA), digits = 3),
+         Pythag = round((R^2)/(R^2 + RA^2), digits = 3),
+         SO_rate = round(SO/AB, digits = 3),
+         WHIP = round((BBA + HA)/(IPouts/3), digits = 3),
+         ISO = round(SLG - BA, digits = 3),
 )
 
 all_years <- all_years %>% 
   mutate(before_75 = ifelse(yearID < 1975, 1, 0))
+
+inflation <- read_csv("scripts/inflation_data.csv")
+inflation <- inflation %>% 
+  mutate(CPI = (255.657 - Avg)/Avg + 1) %>% 
+  select(Year, CPI)
+
+all_years <- all_years %>% 
+  left_join(inflation, by = c("yearID" = "Year"))
+
+all_years <- all_years %>% 
+  mutate(payroll_adj = payroll*CPI)
 
 # write csv to be used in report
 write.csv(all_years, "outputs/paper/all_years.csv")

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  14 DEC 2020 22:48
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  16 DEC 2020 17:23
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -506,35 +506,35 @@ Package grffile Info: Option `multidot' is set to `true'.
 Package grffile Info: Option `extendedchars' is set to `false'.
 Package grffile Info: Option `space' is set to `true'.
 Package grffile Info: \Gin@ii of package `graphicx' fixed on input line 494.
+) (/usr/local/texlive/2018/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count124
+\float@exts=\toks26
+\float@box=\box33
+\@float@everytoks=\toks27
+\@floatcapt=\box34
 ) (/usr/local/texlive/2018/texmf-dist/tex/latex/tools/array.sty
 Package: array 2018/04/07 v2.4g Tabular extension package (FMi)
 \col@sep=\dimen142
-\ar@mcellbox=\box33
+\ar@mcellbox=\box35
 \extrarowheight=\dimen143
-\NC@list=\toks26
+\NC@list=\toks28
 \extratabsurround=\skip52
 \backup@length=\skip53
-\ar@cellbox=\box34
+\ar@cellbox=\box36
 ) (/usr/local/texlive/2018/texmf-dist/tex/latex/multirow/multirow.sty
 Package: multirow 2016/11/25 v2.2 Span multiple rows of a table
 \multirow@colwidth=\skip54
-\multirow@cntb=\count124
+\multirow@cntb=\count125
 \multirow@dima=\skip55
 \bigstrutjot=\dimen144
 ) (/usr/local/texlive/2018/texmf-dist/tex/latex/wrapfig/wrapfig.sty
 \wrapoverhang=\dimen145
 \WF@size=\dimen146
-\c@WF@wrappedlines=\count125
-\WF@box=\box35
-\WF@everypar=\toks27
+\c@WF@wrappedlines=\count126
+\WF@box=\box37
+\WF@everypar=\toks29
 Package: wrapfig 2003/01/31  v 3.6
-) (/usr/local/texlive/2018/texmf-dist/tex/latex/float/float.sty
-Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count126
-\float@exts=\toks28
-\float@box=\box36
-\@float@everytoks=\toks29
-\@floatcapt=\box37
 ) (/usr/local/texlive/2018/texmf-dist/tex/latex/colortbl/colortbl.sty
 Package: colortbl 2012/02/13 v1.0a Color table columns (DPC)
 (/usr/local/texlive/2018/texmf-dist/tex/latex/graphics/color.sty
@@ -638,33 +638,33 @@ LaTeX Info: Redefining \cite on input line 694.
 ) (./moneyball_analysis.aux)
 \openout1 = `moneyball_analysis.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 90.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 90.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 98.
+LaTeX Font Info:    ... okay on input line 98.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 98.
+LaTeX Font Info:    ... okay on input line 98.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 98.
+LaTeX Font Info:    ... okay on input line 98.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 98.
+LaTeX Font Info:    ... okay on input line 98.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 98.
+LaTeX Font Info:    ... okay on input line 98.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 98.
+LaTeX Font Info:    ... okay on input line 98.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 98.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 98.
 (/usr/local/texlive/2018/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Try loading font information for T1+lmr on input line 90.
+LaTeX Font Info:    ... okay on input line 98.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 98.
+LaTeX Font Info:    ... okay on input line 98.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 98.
+LaTeX Font Info:    ... okay on input line 98.
+LaTeX Font Info:    Try loading font information for T1+lmr on input line 98.
 (/usr/local/texlive/2018/texmf-dist/tex/latex/lm/t1lmr.fd
 File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Info: Redefining \microtypecontext on input line 90.
+LaTeX Info: Redefining \microtypecontext on input line 98.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using protrusion set `basicmath'.
@@ -679,7 +679,7 @@ File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman
 (RS)
 )
 \AtBeginShipoutBox=\box47
-Package hyperref Info: Link coloring OFF on input line 90.
+Package hyperref Info: Link coloring OFF on input line 98.
 (/usr/local/texlive/2018/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
 (/usr/local/texlive/2018/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
@@ -687,9 +687,9 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
 \c@section@level=\count137
 )
-LaTeX Info: Redefining \ref on input line 90.
-LaTeX Info: Redefining \pageref on input line 90.
-LaTeX Info: Redefining \nameref on input line 90.
+LaTeX Info: Redefining \ref on input line 98.
+LaTeX Info: Redefining \pageref on input line 98.
+LaTeX Info: Redefining \nameref on input line 98.
 (./moneyball_analysis.out) (./moneyball_analysis.out)
 \@outlinefile=\write3
 \openout3 = `moneyball_analysis.out'.
@@ -756,176 +756,205 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-LaTeX Font Info:    Try loading font information for OT1+lmr on input line 92.
+LaTeX Font Info:    Try loading font information for OT1+lmr on input line 100.
+
 (/usr/local/texlive/2018/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OML+lmm on input line 92.
+LaTeX Font Info:    Try loading font information for OML+lmm on input line 100.
+
 (/usr/local/texlive/2018/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 92.
-
+LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 100
+.
 (/usr/local/texlive/2018/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMX+lmex on input line 92.
-
+LaTeX Font Info:    Try loading font information for OMX+lmex on input line 100
+.
 (/usr/local/texlive/2018/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 92.
+(Font)              <12> on input line 100.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 92.
+(Font)              <8> on input line 100.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 92.
-LaTeX Font Info:    Try loading font information for U+msa on input line 92.
+(Font)              <6> on input line 100.
+LaTeX Font Info:    Try loading font information for U+msa on input line 100.
 (/usr/local/texlive/2018/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 ) (/usr/local/texlive/2018/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 92.
+LaTeX Font Info:    Try loading font information for U+msb on input line 100.
 (/usr/local/texlive/2018/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) (/usr/local/texlive/2018/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 98.
+(Font)              <10> on input line 106.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 98.
+(Font)              <7> on input line 106.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 98.
-LaTeX Font Info:    Try loading font information for T1+lmtt on input line 107.
+(Font)              <5> on input line 106.
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 115.
 
 (/usr/local/texlive/2018/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 ) [1
 
 {/usr/local/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-<moneyball_analysis_files/figure-latex/plot1-1.pdf, id=72, 453.695pt x 313.17pt
+LaTeX Font Info:    Try loading font information for TS1+lmr on input line 128.
+
+(/usr/local/texlive/2018/texmf-dist/tex/latex/lm/ts1lmr.fd
+File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
+)
+<moneyball_analysis_files/figure-latex/plot1-1.pdf, id=73, 453.695pt x 313.17pt
 >
 File: moneyball_analysis_files/figure-latex/plot1-1.pdf Graphic file (type pdf)
 
 <use moneyball_analysis_files/figure-latex/plot1-1.pdf>
 Package pdftex.def Info: moneyball_analysis_files/figure-latex/plot1-1.pdf  use
-d on input line 120.
+d on input line 141.
 (pdftex.def)             Requested size: 453.6939pt x 313.16922pt.
-<moneyball_analysis_files/figure-latex/woba-1.pdf, id=74, 453.695pt x 313.17pt>
-
-File: moneyball_analysis_files/figure-latex/woba-1.pdf Graphic file (type pdf)
-<use moneyball_analysis_files/figure-latex/woba-1.pdf>
-Package pdftex.def Info: moneyball_analysis_files/figure-latex/woba-1.pdf  used
- on input line 128.
-(pdftex.def)             Requested size: 453.6939pt x 313.16922pt.
-<moneyball_analysis_files/figure-latex/fip-1.pdf, id=79, 453.695pt x 313.17pt>
-File: moneyball_analysis_files/figure-latex/fip-1.pdf Graphic file (type pdf)
-<use moneyball_analysis_files/figure-latex/fip-1.pdf>
-Package pdftex.def Info: moneyball_analysis_files/figure-latex/fip-1.pdf  used 
-on input line 136.
-(pdftex.def)             Requested size: 453.6939pt x 313.16922pt.
-<moneyball_analysis_files/figure-latex/cooks-1.pdf, id=82, 440.64626pt x 282.05
-376pt>
-File: moneyball_analysis_files/figure-latex/cooks-1.pdf Graphic file (type pdf)
-
-<use moneyball_analysis_files/figure-latex/cooks-1.pdf>
-Package pdftex.def Info: moneyball_analysis_files/figure-latex/cooks-1.pdf  use
-d on input line 174.
-(pdftex.def)             Requested size: 440.66533pt x 282.06596pt.
-[2] [3pdfTeX warning (ext4): destination with the same identifier (name{figure.
-1}) has been already used, duplicate ignored
-
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.176 \end{figure}
-                  pdfTeX warning (ext4): destination with the same identifier (
-name{table.1}) has been already used, duplicate ignored
-
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.176 \end{figure}
-                   <./moneyball_analysis_files/figure-latex/plot1-1.pdf>] [4pdf
-TeX warning (ext4): destination with the same identifier (name{figure.2}) has b
-een already used, duplicate ignored
-
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.176 \end{figure}
-                   <./moneyball_analysis_files/figure-latex/woba-1.pdf>] [5pdfT
-eX warning (ext4): destination with the same identifier (name{figure.3}) has be
-en already used, duplicate ignored
-
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.176 \end{figure}
-                   <./moneyball_analysis_files/figure-latex/fip-1.pdf>]
-
-LaTeX Warning: Reference `tab:result' on page 6 undefined on input line 196.
-
-[6pdfTeX warning (ext4): destination with the same identifier (name{figure.4}) 
+[2]
+<moneyball_analysis_files/figure-latex/offense-1.pdf, id=91, 457.71pt x 313.17p
+t>
+File: moneyball_analysis_files/figure-latex/offense-1.pdf Graphic file (type pd
+f)
+<use moneyball_analysis_files/figure-latex/offense-1.pdf>
+Package pdftex.def Info: moneyball_analysis_files/figure-latex/offense-1.pdf  u
+sed on input line 149.
+(pdftex.def)             Requested size: 457.72285pt x 313.17877pt.
+[3pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) 
 has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.204 
-       <./moneyball_analysis_files/figure-latex/cooks-1.pdf>] [7] (./moneyball_
-analysis.bbl
-Underfull \hbox (badness 8038) in paragraph at lines 16--20
+l.152 
+       <./moneyball_analysis_files/figure-latex/plot1-1.pdf>]
+<moneyball_analysis_files/figure-latex/pitching-1.pdf, id=106, 457.71pt x 313.1
+7pt>
+File: moneyball_analysis_files/figure-latex/pitching-1.pdf Graphic file (type p
+df)
+<use moneyball_analysis_files/figure-latex/pitching-1.pdf>
+Package pdftex.def Info: moneyball_analysis_files/figure-latex/pitching-1.pdf  
+used on input line 157.
+(pdftex.def)             Requested size: 457.72285pt x 313.17877pt.
+[4pdfTeX warning (ext4): destination with the same identifier (name{figure.2}) 
+has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.160 
+       <./moneyball_analysis_files/figure-latex/offense-1.pdf>]
+<moneyball_analysis_files/figure-latex/wins-1.pdf, id=120, 453.695pt x 313.17pt
+>
+File: moneyball_analysis_files/figure-latex/wins-1.pdf Graphic file (type pdf)
+<use moneyball_analysis_files/figure-latex/wins-1.pdf>
+Package pdftex.def Info: moneyball_analysis_files/figure-latex/wins-1.pdf  used
+ on input line 163.
+(pdftex.def)             Requested size: 453.6939pt x 313.16922pt.
+[5pdfTeX warning (ext4): destination with the same identifier (name{figure.3}) 
+has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.165 F
+       igure \ref{fig:wins} shows the distribution of wins for teams present...
+ <./moneyball_analysis_files/figure-latex/pitching-1.pdf>]
+
+LaTeX Warning: Reference `fig:wins' on page 6 undefined on input line 165.
+
+[6 <./moneyball_analysis_files/figure-latex/wins-1.pdf>]
+
+LaTeX Warning: Reference `tab:model' on page 7 undefined on input line 192.
+
+<moneyball_analysis_files/figure-latex/cooks-1.pdf, id=159, 440.64626pt x 282.0
+5376pt>
+File: moneyball_analysis_files/figure-latex/cooks-1.pdf Graphic file (type pdf)
+
+<use moneyball_analysis_files/figure-latex/cooks-1.pdf>
+Package pdftex.def Info: moneyball_analysis_files/figure-latex/cooks-1.pdf  use
+d on input line 196.
+(pdftex.def)             Requested size: 440.66533pt x 282.06596pt.
+[7pdfTeX warning (ext4): destination with the same identifier (name{figure.4}) 
+has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.231 
+       <./moneyball_analysis_files/figure-latex/cooks-1.pdf>]
+
+LaTeX Warning: Reference `tab:result' on page 8 undefined on input line 247.
+
+[8pdfTeX warning (ext4): destination with the same identifier (name{table.1}) h
+as been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.257 
+      ] [9] (./moneyball_analysis.bbl
+Underfull \hbox (badness 8038) in paragraph at lines 21--25
 []\T1/lmr/m/n/10 (+20) John Ed-wards.  Stat to the fu-ture: Move over, era, it'
 s time for fip, Sep 2017.
  []
 
 
-Underfull \hbox (badness 4429) in paragraph at lines 34--38
+Underfull \hbox (badness 4429) in paragraph at lines 39--43
 []\T1/lmr/m/n/10 (+20) Sports Ref-er-ence LLC.  \T1/lmr/m/it/10 (+20) Baseball-
 Reference.com\T1/lmr/m/n/10 (+20) .  Ma-jor League Statis-tics and In-for-ma-ti
 on.
  []
 
 )
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 217.
-[8]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 217.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 268.
+[10]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 268.
 (./moneyball_analysis.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 217.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 217.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 268.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 268.
 Package rerunfilecheck Info: File `moneyball_analysis.out' has not changed.
 (rerunfilecheck)             Checksum: 66FBCC4C9F65DAD63722E57771AC713C;582.
 
 LaTeX Warning: There were undefined references.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 217.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 268.
  ) 
 Here is how much of TeX's memory you used:
- 14402 strings out of 492649
- 208391 string characters out of 6129622
- 332099 words of memory out of 5000000
- 17906 multiletter control sequences out of 15000+600000
- 70639 words of font info for 109 fonts, out of 8000000 for 9000
+ 14460 strings out of 492649
+ 209789 string characters out of 6129622
+ 329418 words of memory out of 5000000
+ 17952 multiletter control sequences out of 15000+600000
+ 71081 words of font info for 111 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 34i,9n,38p,1891b,372s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 34i,9n,38p,1121b,343s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2018/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/
 texlive/2018/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/local/texlive/20
-18/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/2018/texmf-dist/
-fonts/enc/dvips/lm/lm-mathit.enc}</usr/local/texlive/2018/texmf-dist/fonts/type
-1/public/lm/lmbx10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/l
-m/lmbx12.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/lm/lmbx9.pf
-b></usr/local/texlive/2018/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></usr/lo
-cal/texlive/2018/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive
-/2018/texmf-dist/fonts/type1/public/lm/lmr12.pfb></usr/local/texlive/2018/texmf
--dist/fonts/type1/public/lm/lmr17.pfb></usr/local/texlive/2018/texmf-dist/fonts
-/type1/public/lm/lmr6.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/publi
-c/lm/lmr7.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/lm/lmr8.pf
-b></usr/local/texlive/2018/texmf-dist/fonts/type1/public/lm/lmr9.pfb></usr/loca
-l/texlive/2018/texmf-dist/fonts/type1/public/lm/lmri10.pfb></usr/local/texlive/
-2018/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2018/texmf
--dist/fonts/type1/public/lm/lmtt10.pfb>
-Output written on moneyball_analysis.pdf (8 pages, 774407 bytes).
+18/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/local/texlive/2018/texmf-d
+ist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/2018/texmf-dist/fonts/enc/
+dvips/lm/lm-ts1.enc}</usr/local/texlive/2018/texmf-dist/fonts/type1/public/lm/l
+mbx10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/lm/lmbx12.pfb>
+</usr/local/texlive/2018/texmf-dist/fonts/type1/public/lm/lmbx9.pfb></usr/local
+/texlive/2018/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></usr/local/texlive/2
+018/texmf-dist/fonts/type1/public/lm/lmmi7.pfb></usr/local/texlive/2018/texmf-d
+ist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2018/texmf-dist/fonts/t
+ype1/public/lm/lmr12.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public
+/lm/lmr17.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/lm/lmr6.pf
+b></usr/local/texlive/2018/texmf-dist/fonts/type1/public/lm/lmr7.pfb></usr/loca
+l/texlive/2018/texmf-dist/fonts/type1/public/lm/lmr8.pfb></usr/local/texlive/20
+18/texmf-dist/fonts/type1/public/lm/lmr9.pfb></usr/local/texlive/2018/texmf-dis
+t/fonts/type1/public/lm/lmri10.pfb></usr/local/texlive/2018/texmf-dist/fonts/ty
+pe1/public/lm/lmsy10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public
+/lm/lmsy7.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/lm/lmtt10.
+pfb>
+Output written on moneyball_analysis.pdf (10 pages, 1132765 bytes).
 PDF statistics:
- 247 PDF objects out of 1000 (max. 8388607)
- 203 compressed objects within 3 object streams
- 43 named destinations out of 1000 (max. 500000)
- 16453 words of extra memory for PDF output out of 17280 (max. 10000000)
+ 289 PDF objects out of 1000 (max. 8388607)
+ 243 compressed objects within 3 object streams
+ 49 named destinations out of 1000 (max. 500000)
+ 16458 words of extra memory for PDF output out of 17280 (max. 10000000)
 

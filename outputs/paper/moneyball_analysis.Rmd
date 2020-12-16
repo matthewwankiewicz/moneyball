@@ -1,12 +1,14 @@
 ---
-title: "Logistic Regression shows that Moneyball was right"
+title: "Using Logistic Regression to Predict Baseball Playoff Probabilities"
 author: "Matthew Wankiewicz"
 date: "26/11/2020"
 bibliography: references.bib
-abstract: "The book moneyball highlighted a statisitcs revolution that was occuring in baseball in the early 2000's. In this report, I will use logistic regression to determine whether the advanced stats that stemmed from this revolution are useful for predicting a team's success. According to the model (I still have to do this). The model correctly predicted that (insert) teams would make the playoffs using these metrics. "
+abstract: "The book moneyball highlighted a statisitcs revolution that was occuring in baseball in the early 2000's. In this report, logistic regression to determine whether the advanced stats that stemmed from this revolution are useful for predicting a team's success. After running the model, we find that it successfully determines if a team will make the playoffs (or not) 88 percent of the time. This is a significant finding as it shows that these advanced metrics are extremely useful and teams should fully shift their focus on these metrics."
 output:
   bookdown::pdf_document2:
     citation_package: natbib
+    includes:  
+      in_header: my_header.tex
 toc: FALSE
 ---
 **Keywords**: Moneyball, Baseball, Sabermetrics, Logistic Regression
@@ -48,68 +50,153 @@ This data analysis was conducted using R (@citeR), and in particular the package
 
 The data collected was from the `Lahman` package in R (@citeLahman) and Baseball-Reference (@citebbref), Fangraphs (@citefangraphs) was also used to help calculate one of the statistics. 
 
-The `Lahman` package contains the `Teams` dataset which was used for the calculation of the basic statistics along with the more advanced ones. The basic statistics used for this analysis were Batting Average, Earned Run Average, Weighted On Base Average and Fielding Independent Pitching. Batting average is the rate at which a player will get a hit, it is calculated by $Hits/Atbats$. Earned Run Average is the amount of runs a player allows, per 9 innings (1 whole game), it is calculated by $Runs/InningsPitched$. Next, we get to the advanced statistics, weighted on base average is considered to be a "better" version of batting average. wOBA was created by Tom Tango and he writes more in depth about it in "The Book" @citetango.^[The Book is seen as the best book for aspiring baseball analysts or "saberists" to get into the MLB analysis game.] wOBA is a weighted average of each of the ways a player can get on base (walking, getting a single, double, triple and a home run) and is divided by the ways a player gets a chance to hit (at bats, walks and sacrifice flies). Usually the coefficients of wOBA change by year but for this report, I used a manipulation of other advanced statistics that were described in "The Book", $(2*OBP + SLG) / 3$ ^[OBP is on base percentage, the rate a player gets on base (includes walks). SLG is slugging percentage, the total bases (TB) a player gets divided by at-bats (a single = 1 TB, double = 2, triple = 3 and Home Run = 4).] Lastly, fielding independent pitching estimates a player's run prevention if they did not have a defence, as opposed to ERA which includes defence. The equation for FIP is simple, $(13*HRA + 3*BBA - 2*SOA)/IP$ where HRA is home runs allowed, BBA is walks allowed and SOA is the number of strikeouts a player gets.
+The `Lahman` package contains the `Teams` dataset which was used for the calculation of the basic statistics along with the more advanced ones. The basic statistics used for this analysis were Fielding Independent Pitching (FIP), Weighted on base average (wOBA), batting average balls in play of the opponents (BABIPA), walks plus hits divided by innings pitched (WHIP) and the strikeout rates (K%).
+
+- wOBA: Weighted on base average is considered to be a "better" version of batting average. wOBA was created by Tom Tango and he writes more in depth about it in "The Book" @citetango.^[The Book is seen as the best book for aspiring baseball analysts or "saberists" to get into the MLB analysis game.] wOBA is a weighted average of each of the ways a player can get on base (walking, getting a single, double, triple and a home run) and is divided by the ways a player gets a chance to hit (at bats, walks and sacrifice flies). Usually the coefficients of wOBA change by year but for this report, I used a manipulation of other advanced statistics that were described in "The Book", $(2*OBP + SLG) / 3$ ^[OBP is on base percentage, the rate a player gets on base (includes walks). SLG is slugging percentage, the total bases (TB) a player gets divided by at-bats (a single = 1 TB, double = 2, triple = 3 and Home Run = 4).]
+
+- FIP: Fielding independent pitching estimates a player's run prevention if they did not have a defence, as opposed to ERA which includes defence. The equation for FIP is simple, $(13*HRA + 3*BBA - 2*SOA)/IP$ where HRA is home runs allowed, BBA is walks allowed and SOA is the number of strikeouts a player gets. As Fangraphs says, "FIP is a measurement of a pitcher’s performance that strips out the role of defense, luck, and sequencing, making it a more stable indicator of how a pitcher actually performed over a given period of time" (@citeFIP).
+
+- BABIPA: Batting average on balls in play against is pretty much the opposite of FIP. It looks at the batting average of only the balls that the defence has to field, as opposed to FIP which only looks at outcomes that the defence cannot control. The equation for BABIPA is: $(HA-HRA)/(IPouts - SOA - HRA)$ where HA is hits allowed, HRA is home runs allowed, IPouts is the number of outs a team gets while pitching and SOA is the number of strikeouts a team gets while pitching.
+
+- WHIP: Walks plus hits divided by innings pitched is kind of self explanatory. It takes the amount of walks a team gives up, plus the number of hits and divides it by the number of innings pitched: $(BBA + HA)/IP$. WHIP is useful because it tells us how good a team (or pitcher) is at preventing runners from getting on base. If a team allows more people to get on base, they are more likely to give up runs and losing a game.
+
+- SO%: Strikeout rates tell us how often a team (or batter) strikes out when they are batting. Some players have a tendency to only hit the ball far or not hit it at all while other players hit the ball almost all of the time. SO% helps show what type of gameplay a team relies on and it will be interesting to see how it affects a team's playoff chances. To calculate SO% we take the number of strikeouts a team got while batting and divide that by the number of times they bat $SO/AB$
+
 
 ```{r plot1, echo=F, fig.cap="The increase in Payroll over the Years"}
 all <- all_years %>% 
-  ggplot(aes(x = yearID, y = payroll, color = playoffs)) +
+  ggplot(aes(x = yearID, y = payroll_adj, color = as.factor(playoffs))) +
   geom_point() +
   labs(title = "Payroll vs Year",
        x = "Year",
-       y = "Payroll")
+       y = "Payroll",
+       color = "Playoffs") +
+  scale_color_manual(values = c("grey", "blue"))
 before <- all_years %>% 
   filter(before_75 == 1) %>% 
-  ggplot(aes(x = yearID, y = payroll, color = playoffs)) +
-  geom_point() +
+  ggplot(aes(x = yearID, y = payroll_adj)) +
+  geom_point(aes(color = as.factor(playoffs))) +
   labs(title = "Payroll vs Year",
        x = "Year",
        y = "Payroll",
-       subtitle = "Before 1975")
+       subtitle = "Before 1975",
+       color = "Playoffs") +
+  scale_color_manual(values = c("grey", "blue"))
 after <- all_years %>% 
   filter(before_75 == 0) %>% 
-  ggplot(aes(x = yearID, y = payroll, color = playoffs)) +
+  ggplot(aes(x = yearID, y = payroll_adj, color = as.factor(playoffs))) +
   geom_point() +
   labs(title = "Payroll vs Year",
        x = "Year",
        y = "Payroll",
-       subtitle = "After 1975")
+       subtitle = "After 1975",
+       color = "Playoffs") +
+  scale_color_manual(values = c("grey", "blue"))
 bottom <- plot_grid(before, after)
 plot_grid(all, bottom, nrow = 2)
 ```
 
-Figure \@ref(fig:plot1) shows us the increase in payroll over the years, starting at 1920 and ending at 2019. We see that up until 1960 payrolls were fairly constant but after the 60s we have seen a rapid increase in payroll. We can also see colours which represent if a team made the playoffs or not (light blue representing yes and dark blue meaning no). It is clear that in most seasons, teams that spend more make the playoffs.
+Figure \@ref(fig:plot1) shows us the increase in payroll over the years, starting at 1920 and ending at 2019. We see that up until 1960, payrolls were fairly constant but after the 60s we have seen a rapid increase in payroll. We can also see colours which represent if a team made the playoffs or not (light blue representing yes and dark blue meaning no). It is clear that in most seasons, teams that spend more make the playoffs. The salaries have been adjusted to represent the dollar in terms of what it would be in 2019 using inflation rates from the US Inflation Calculator (@citeUSINF). Clearly, the adjustment does not do much as we see that teams were likely just spending more compared to the past.
 
 
-```{r woba, fig.cap="Relationship between wOBA and Wins"}
-all_years %>% 
-  ggplot(aes(W, wOBA, color = playoffs)) + 
-  geom_point() 
+```{r offense, fig.cap="Relationship between Advanced Offense Metrics and Wins"}
+woba <- all_years %>% 
+  ggplot(aes(W, wOBA, color = as.factor(playoffs))) + 
+  geom_point() +
+  labs(title = "wOBA vs Wins",
+       x = "Wins",
+       color = "Playoffs") +
+  scale_color_manual(values = c("grey", "blue"))
+so_rate <- all_years %>% 
+  ggplot(aes(W, SO_rate, color = as.factor(playoffs))) + 
+  geom_point() +
+  labs(title = "Strikeout Rate vs Wins",
+       x = "Wins",
+       y = "Strikeout Rate",
+       color = "Playoffs") +
+  scale_color_manual(values = c("grey", "blue"))
+plot_grid(woba, so_rate, 
+          nrow = 2)
 ```
 
-Figure \@ref(fig:woba) shows the relationship between wOBA and the amount of teams a win gets, along with colours representing a team's ability to make the playoffs. We see that as wOBA increases, the amount of wins increases and the number of teams making the playoffs increases as well. For the most part, it seems that if a team can get to about 87 wins in a season, they will likely make the playoffs. There were also some teams present which made the playoffs after winning less than 65 games. This occured because of dispute between the players and the league which led to a 50 day strike and led to teams winning less games in total (@cite1981)^[The players eventually returned and the playoffs continued]. 
+Figure \@ref(fig:offense) shows the relationship between offensive advanced metrics and the amount of teams a win gets, along with colours representing a team's ability to make the playoffs. From the first graphs, we see that as wOBA increases, the amount of wins increases and the number of teams making the playoffs increases as well. We also see that there does not appear to be too much of a relationship between the number of wins a team gets and their strikeout rate. This makes sense because some teams are built on hitting home runs and strikeout a lot, versus teams who play more strategically and don't hit the ball as hard.
 
-```{r fip, fig.cap="Relationship between FIP and Wins"}
-all_years %>% 
-  ggplot(aes(W, FIP, color = playoffs)) + 
-  geom_point() 
+```{r pitching, fig.cap="Relationship between FIP and Wins"}
+fip <- all_years %>% 
+  ggplot(aes(W, FIP, color = as.factor(playoffs))) + 
+  geom_point() +
+  labs(title = "FIP vs Wins",
+       x = "Wins",
+       color = "Playoffs") +
+  scale_color_manual(values = c("grey", "blue"))
+whip <- all_years %>% 
+  ggplot(aes(W, WHIP, color = as.factor(playoffs))) +
+  geom_point() + 
+  labs(title = "WHIP vs Wins",
+       x = "Wins",
+       color = "Playoffs") +
+  scale_color_manual(values = c("grey", "blue"))
+pitch1 <- plot_grid(fip, whip)
+babip <- all_years %>% 
+  ggplot(aes(W, BABIPA, color = as.factor(playoffs))) +
+  geom_point() +
+  labs(title = "BABIPA vs Wins",
+       x = "Wins",
+       y = "BABIP against",
+       color = "Playoffs") +
+  scale_color_manual(values = c("grey", "blue"))
+plot_grid(pitch1, babip,
+          nrow = 2)
 ```
 
-Figure \@ref(fig:fip) shows that having a lower FIP means that a team is going to win more games. This makes sense because if a team gives up less runs, they are more likely to outscore their opponents, leading to a win. 
+
+Figure \@ref(fig:pitching) shows the relationship between some advanced pitching metrics and the amount of wins a team gets in a season. We see that WHIP appears to have a very strong impact on wins and if a team can keep their WHIP as low as possible, they're more likely to make the playoffs. It appears that FIP has the next strongest relationship with wins, better teams have lower FIPs. Lastly, it appears that BABIP against does have an impact on the amount of wins a team gets, just not as significant as FIP and WHIP.
+
+```{r wins, message=F, warning=F}
+all_years %>% 
+  ggplot(aes(W, fill = as.factor(playoffs))) +
+  geom_histogram() +
+  scale_fill_manual(values = c("grey", "blue")) +
+  labs(title = "Distribution of Wins in the Lahman Data",
+       x = "Wins",
+       y = "Count",
+       fill = "Playoffs")
+```
+
+Figure \@ref(fig:wins) shows the distribution of wins for teams present in the Lahman data. We see that majority of team make the playoffs when they win about 85 games although there is some spread in the distribution of wins for playoff teams. There are also some teams present which made the playoffs after winning less than 75 games. This occured because of dispute between the players and the league which led to a 50 day strike and led to teams winning less games in total (@cite1981)^[The players eventually returned and the playoffs continued]. 
 
 # Model
 
+In order to get playoff probabilites, I will use logistic regression. Logistic regression takes a sum of various factors and then after manipulating the equation, we will get a probability that tells how likely something is to happen. In our case, logistic regression is used to determine the probability that a team will be making the playoffs. The logistic regression will be in the form:
+
+\begin{equation} 
+  log(\frac{\hat{p}}{1 - \hat{p}}) = \beta_{0} + \beta_{1}x_{FIP} + \beta_{2}x_{wOBA} +
+  \beta_{3}x_{BABIPA} + \beta_{4}x_{SOrate} + \beta_{5}x_{before75}
+  (\#eq:logit)
+\end{equation} 
+
+where $x_{FIP}$ represents the team's FIP, $x_{wOBA}$ represents the team's wOBA, $x_{BABIPA}$ represents the team's BABIP against, $x_{SOrate}$ represents the team's strikeout rate and $x_{before75}$ represent whether the team in question was playing before 1975 or not.
+
+In Equation \@ref(eq:logit), the $\beta$ values represent a coefficient determined by the `glm` function, the will either be positive or negative, depending on if a higher x values increases or decreases a team's chances of making the playoffs. Each $\beta$ value will be multiplied by it's corresponding x, for example, teams with higher wOBA's tend to make the playoffs more often, so the $\beta$ value for $x_{wOBA}$ will likely be positive. Once all of the coefficients are multiplied we take the sum of the equation and insert it into the equation below:
+
+\begin{equation} 
+  \frac{e^{sum}}{1+e^{sum}}
+  (\#eq:prob)
+\end{equation} 
+
+Equation \@ref(eq:prob) is just a manipulation of equation \@ref(eq:logit), where $e$ is the exponential equation and $sum$ is the sum of the right side of equation \@ref(eq:logit). We see that as the sum of the equation increases, the probability of a team making the playoffs increases as well. 
+The logistic regression model is run using the `glm()` function in R (@citeR). The decision to run this model over other models like linear regression was made by the fact that we were predicting a binary variable about a voter's decision. Since there are only two possible options our data will likely follow an S shape and a straight line equation will not be helpful to model this relationship. 
+
+One weakness present with a logistic regression model is that since the response variable must be binary (either make the playoffs or don't), we cannot expand it to determine if a team wins their division or just scrapes into the playoffs.
+
 ```{r model}
-model <- glm(playoffs ~ wOBA + FIP + payroll + BA
-             + ERA + before_75,
+model <- glm(playoffs ~ FIP + wOBA + BABIPA + WHIP + SO_rate +
+               before_75,
              data = all_years, family = binomial())
 coefficients <- broom::tidy(model)
-coefficients %>% 
-  kable(digits = 4,
-               caption = "Regression Model Coefficients") %>% 
-  kable_styling()
 ```
 
-Table \@ref(tab:model) shows us the coefficients from our logistic regression model. We see that teams with a higher wOBA have better chances of making the playoffs, along with team with higher payrolls. This makes sense because when teams will attempt to spend the most money to get the best players and when they score more runs they'll win more games. We can also see that the coefficient for FIP is negative, this does not mean that FIP brings down the chances of making the playoffs. The best values for FIP are the ones closer to 0 and as the value begins to increase, it shows that the pitcher is not that good. What the coefficient is telling us is that lower FIP's give higher chances of making the playoffs while higher FIP's bring down the chances of making the playoffs.
+Table \@ref(tab:model) shows us the coefficients from our logistic regression model. We can see that all variables except the intercept have statistically significant p-values, meaning that we know for sure that the variables have an effect on a team's playoff chances. The intercept's insignificance is not bad in our situation because it means that we don't know for sure if the intercept is not 0.
 
 ```{r cooks, fig.cap="Cook's Distance for the Model"}
 plot(model, which = 4)
@@ -118,6 +205,17 @@ plot(model, which = 4)
 Figure \@ref(fig:cooks) shows us the observed cook's distances for the model. Cook's distance gives us the difference between the ... . We see that these cook's distances are very low (most are under 0.01), since our distances are fairly low, we can conclude that the model is fitting the data fairly well.
 
 # Results
+
+```{r coefficients}
+coefficients %>% 
+  kable(digits = 5,
+        caption = "Regression Model Coefficients") %>% 
+  kable_styling()
+```
+
+Table \@ref(tab:coefficients) shows us the coefficients from our logistic regression model. We can see that all variables except the intercept have statistically significant p-values, meaning that we know for sure that the variables have an effect on a team's playoff chances. The intercept's insignificance is not bad in our situation because it means that we don't know for sure if the intercept is not 0.
+
+We see that using the logistic regression equation, the lowest possible probability of making the playoffs is $4.23*10^{-5}$ percent. This was calculated using the worst possible stats present in the data used and it is extremely unlikely a team would be this bad! The highest possible probability of making the playoffs is 99.99 percent. This was taken from the maximum stats present in the data, and although it would be tough for a team like this to exist, there have been some teams that were close. 
 
 ```{r result}
 all_years_predict <- all_years
@@ -144,9 +242,9 @@ props %>%
   kable_styling()
 ```
 
-Table \@ref(tab:result) displays the proportion of teams which made the playoffs from the observed data vs the results of our model's predictions. We can see that the model is very strict with its results, only predicted about 15.6 percent of teams to make the playoffs, less than the observed 18.9 percent. 
+Table \@ref(tab:result) displays the proportion of teams which made the playoffs from the observed data vs the results of our model's predictions. We can see that the model is very strict with its results, only predicted about 15 percent of teams to make the playoffs, less than the observed 18.9 percent. 
 
-We can also look at the overall accuracy of the model. In order to find the accuracy of the model, I compared the predicted results to the actual results and we find that the model succesfully predicted if a team would make the playoffs 88.8 percent of the time. These results are very significant because it shows that the model can fairly succesfully determine what a playoff team is. This also bodes well for our attempt to see if the results for the 2020 predictions will be correct.
+We can also look at the overall accuracy of the model. In order to find the accuracy of the model, I compared the predicted results to the actual results and we find that the model succesfully predicted if a team would make the playoffs about 88 percent of the time. These results are very significant because it shows that the model can fairly succesfully determine what a playoff team is. This also bodes well for our attempt to see if the results for the 2020 predictions will be correct.
 
 # Discussion
 
