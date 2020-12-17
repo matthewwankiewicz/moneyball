@@ -174,7 +174,7 @@ all_years <- all_years %>%
          wOBA = round((OBP*2 + SLG)/3, digits = 3),
          FIP = round((13*HRA + 3*BBA - 2*SOA)/((IPouts/3)) + fip_constant, digits = 3),
          BA = round(H/AB, digits = 3),
-         BABIPA = round((HA - HRA)/(IPouts - SOA - HRA), digits = 3),
+         oBABIP = round((HA - HRA)/(IPouts - SOA - HRA), digits = 3),
          Pythag = round((R^2)/(R^2 + RA^2), digits = 3),
          SO_rate = round(SO/AB, digits = 3),
          WHIP = round((BBA + HA)/(IPouts/3), digits = 3),

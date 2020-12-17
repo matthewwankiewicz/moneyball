@@ -12,6 +12,7 @@ Outputs contains data that was taken from the scripts folder and make the final 
   - all_years.csv is the cleaned data that is the output of the payroll_data_scraper
   - moneyball_analysis.pdf and moneyball_analysis.rmd is the output of the report in both .rmd and .pdf form
   - references.bib contains the references used for this analysis.
+  - my_header.tex contains some code for formatting the knitted pdf properly.
   
   
 If you have any questions about the project, please email me at matthew.wankiewicz@mail.utoronto.ca
