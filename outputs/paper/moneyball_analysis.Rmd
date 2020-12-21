@@ -3,7 +3,7 @@ title: "Using Logistic Regression to Predict Baseball Playoff Probabilities"
 author: "Matthew Wankiewicz"
 date: "26/11/2020"
 bibliography: references.bib
-abstract: "The book moneyball highlighted a statisitcs revolution that was occuring in baseball in the early 2000's. In this report, logistic regression to determine whether the advanced stats that stemmed from this revolution are useful for predicting a team's success. After running the model, we find that it successfully determines if a team will make the playoffs (or not) 88 percent of the time. This is a significant finding as it shows that these advanced metrics are extremely useful and teams should fully shift their focus on these metrics."
+abstract: "Over the years, there has been a rapid increase in spending on players in professional sports and in particular baseball, due to the lack of a salary cap. This increase in spending, along with the statistical was countered by a statistical revolution started by the 2003 Oakland Athletics as highlighted in the book 'Moneyball'. In this report, logistic regression to determine whether the advanced stats that stemmed from this revolution are useful for predicting a team's success and we find that the model is 88 percent accurate on predicting a team's success. This is a significant finding as it shows that these advanced metrics are extremely useful for predicting a team's success and shows that a greater emphasis must be placed on these metrics."
 output:
   bookdown::pdf_document2:
     citation_package: natbib
