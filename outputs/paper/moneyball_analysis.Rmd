@@ -53,11 +53,15 @@ This data analysis was conducted using R (@citeR), and in particular the package
 
 # Data
 
-The data collected is from the `Lahman` package in R (@citeLahman). The `Lahman` package contains yearly player statistics going all the way back to the late 1800s. For this project, I will only use the data from 1920 and onward because those years have the most observations for statistics like payroll data. When looking for payroll data, I found that some years did not have complete payroll data for all teams so these observations were removed^[I did attempt to take the average payroll and apply it to the other teams, but some years only had 2 of 16 payrolls recorded]. After removing the years with missing entries, there were 2096 observations present for this analysis. In the `Lahman` package there are many different datasets present, for this project I will be using the `Teams` dataset. In order to collect the payroll data, I created a scraper that collected yearly Team stats from Baseball Reference (@citebbref). The scraper takes the data from each year and saved it into a larger dataset ^[This scraper can be found in the scripts folder of my GitHub repo.]. The payroll data will be crucial for my report because the basis of Moneyball is fielding the best possible team by spending the least amount of money. 
+The data collected is from the `Lahman` package in R (@citeLahman). The `Lahman` package contains yearly player statistics going all the way back to the late 1800s. For this project, I will only use the data from 1920 and onward because those years have the most observations for statistics like payroll data. When looking for payroll data, I found that some years did not have complete payroll data for all teams so these observations were removed. After removing the years with missing entries, there were 2096 observations present for this analysis. In the `Lahman` package there are many different datasets present, for this project I will be using the `Teams` dataset. In order to collect the payroll data, I created a scraper that collected yearly Team stats from Baseball Reference (@citebbref). The scraper takes the data from each year and saved it into a larger dataset ^[This scraper can be found in the scripts folder of my GitHub repo.]. The payroll data will be crucial for my report because the basis of Moneyball is fielding the best possible team by spending the least amount of money. 
 
-As mentioned above, the `Lahman` package contains the `Teams` dataset which was used for the calculation of the basic statistics along with the more advanced ones. The statistics used for this analysis were Fielding Independent Pitching (FIP), Weighted on base average (wOBA), batting average balls in play of the opponents (oBABIP), walks plus hits divided by innings pitched (WHIP) and the strikeout rates (K%). The metrics used for this analysis will be explained below.
+As mentioned above, the `Lahman` package contains the `Teams` dataset which was used for the calculation of the basic statistics along with the more advanced ones. The `Teams` data contains observations from all the way back 1871, but as mentioned above, this analysis will focus on 1920 to 2019. The issue with going back this far in the past is that the methods of observations were changed. An major example of this is in the recording of certain statistics like Sacrifice Hits (SF) or recording if a player was hit by a pitch (HBP). For this analysis I replaced all of the missing values with 0's because the impact of these statistics on the advanced metrics we plan to use are minimal and it is likely that stats like HBP were just included in regular walk stats. 
 
-- **wOBA**: Weighted on base average is considered to be a "better" version of batting average. wOBA was created by Tom Tango and he writes more in depth about it in "The Book" @citetango.^[The Book is seen as the best book for aspiring baseball analysts or "saberists" to get into the MLB analysis game.] wOBA is a weighted average of each of the ways a player can get on base (walking, getting a single, double, triple and a home run) and is divided by the ways a player gets a chance to hit (at bats, walks and sacrifice flies). Usually the coefficients of wOBA change by year but for this report, I used a manipulation of other advanced statistics that were described in "The Book", $(2*OBP + SLG) / 3$ ^[OBP is on base percentage, the rate a player gets on base (includes walks). SLG is slugging percentage, the total bases (TB) a player gets divided by at-bats (a single = 1 TB, double = 2, triple = 3 and Home Run = 4).]
+There aren't any concerns with how the data was collected other than the ones mentioned above. I don't have any concerns with it because the definitions for what a hit or home run is has not changed over time.
+
+The statistics used for this analysis were Fielding Independent Pitching (FIP), Weighted on base average (wOBA), batting average balls in play of the opponents (oBABIP), walks plus hits divided by innings pitched (WHIP) and the strikeout rates (K%). The metrics used for this analysis will be explained below.
+
+- **wOBA**: Weighted on base average is considered to be a "better" version of batting average. wOBA was created by Tom Tango and he writes more in depth about it in "The Book" (@citetango).^[The Book is seen as the best book for aspiring baseball analysts or "saberists" to get into the MLB analysis game.] wOBA is a weighted average of each of the ways a player can get on base (walking, getting a single, double, triple and a home run) and is divided by the ways a player gets a chance to hit (at bats, walks and sacrifice flies). Usually the coefficients of wOBA change by year but for this report, I used a manipulation of other advanced statistics that were described in "The Book", $(2*OBP + SLG) / 3$ ^[OBP is on base percentage, the rate a player gets on base (includes walks). SLG is slugging percentage, the total bases (TB) a player gets divided by at-bats (a single = 1 TB, double = 2, triple = 3 and Home Run = 4).]
 
 - **FIP**: Fielding independent pitching estimates a player's run prevention if they did not have a defence, as opposed to ERA which includes defence. The equation for FIP is simple, $(13*HRA + 3*BBA - 2*SOA)/IP$ where HRA is home runs allowed, BBA is walks allowed and SOA is the number of strikeouts a player gets. As Fangraphs says, "FIP is a measurement of a pitcher’s performance that strips out the role of defense, luck, and sequencing, making it a more stable indicator of how a pitcher actually performed over a given period of time" (@citeFIP).
 
@@ -71,8 +75,7 @@ As mentioned above, the `Lahman` package contains the `Teams` dataset which was 
 
 Now that the metrics we're focusing on have been discussed, we can look at some plots to help visualize the data.
 
-
-```{r payroll, echo=F, fig.cap="The increase in Payroll over the Years"}
+```{r payroll, echo=F, fig.cap="The increase in Payroll over the Years", fig.height=4}
 # create plot for payroll vs year
 all <- all_years %>% 
   ggplot(aes(x = yearID, y = payroll_adj, color = as.factor(playoffs))) +
@@ -81,7 +84,8 @@ all <- all_years %>%
        x = "Year",
        y = "Payroll",
        color = "Playoffs") +
-  scale_color_manual(values = c("grey", "blue"))
+  scale_color_manual(values = c("grey", "blue")) +
+  theme_classic()
 # plot for payroll vs year, before 75
 before <- all_years %>% 
   filter(before_75 == 1) %>% 
@@ -92,7 +96,8 @@ before <- all_years %>%
        y = "Payroll",
        subtitle = "Before 1975",
        color = "Playoffs") +
-  scale_color_manual(values = c("grey", "blue"))
+  scale_color_manual(values = c("grey", "blue")) +
+  theme_classic()
 # plot for payroll vs year, after 75
 after <- all_years %>% 
   filter(before_75 == 0) %>% 
@@ -103,7 +108,8 @@ after <- all_years %>%
        y = "Payroll",
        subtitle = "After 1975",
        color = "Playoffs") +
-  scale_color_manual(values = c("grey", "blue"))
+  scale_color_manual(values = c("grey", "blue")) +
+  theme_classic()
 
 # plot the graphs
 bottom <- plot_grid(before, after)
@@ -121,7 +127,8 @@ woba <- all_years %>%
   labs(title = "wOBA vs Wins",
        x = "Wins",
        color = "Playoffs") +
-  scale_color_manual(values = c("grey", "blue"))
+  scale_color_manual(values = c("grey", "blue")) +
+  theme_classic()
 # create plot for strikeout rate vs wins
 so_rate <- all_years %>% 
   ggplot(aes(W, SO_rate, color = as.factor(playoffs))) + 
@@ -130,7 +137,8 @@ so_rate <- all_years %>%
        x = "Wins",
        y = "Strikeout Rate",
        color = "Playoffs") +
-  scale_color_manual(values = c("grey", "blue"))
+  scale_color_manual(values = c("grey", "blue")) +
+  theme_classic()
 # plot graphs
 plot_grid(woba, so_rate, 
           nrow = 2)
@@ -146,7 +154,8 @@ fip <- all_years %>%
   labs(title = "FIP vs Wins",
        x = "Wins",
        color = "Playoffs") +
-  scale_color_manual(values = c("grey", "blue"))
+  scale_color_manual(values = c("grey", "blue")) +
+  theme_classic()
 # create plot for WHIP vs wins
 whip <- all_years %>% 
   ggplot(aes(W, WHIP, color = as.factor(playoffs))) +
@@ -154,7 +163,8 @@ whip <- all_years %>%
   labs(title = "WHIP vs Wins",
        x = "Wins",
        color = "Playoffs") +
-  scale_color_manual(values = c("grey", "blue"))
+  scale_color_manual(values = c("grey", "blue")) +
+  theme_classic()
 pitch1 <- plot_grid(fip, whip)
 # create plot for oBABIP vs wins
 babip <- all_years %>% 
@@ -164,7 +174,8 @@ babip <- all_years %>%
        x = "Wins",
        y = "BABIP against",
        color = "Playoffs") +
-  scale_color_manual(values = c("grey", "blue"))
+  scale_color_manual(values = c("grey", "blue")) +
+  theme_classic()
 # plot graphs
 plot_grid(pitch1, babip,
           nrow = 2)
@@ -173,7 +184,7 @@ plot_grid(pitch1, babip,
 
 Figure \@ref(fig:pitching) shows the relationship between some advanced pitching metrics and the amount of wins a team gets in a season. We see that WHIP appears to have a very strong impact on wins and if a team can keep their WHIP as low as possible, they're more likely to make the playoffs. It appears that FIP has the next strongest relationship with wins, better teams have lower FIPs. Lastly, it appears that BABIP against does have an impact on the amount of wins a team gets, just not as significant as FIP and WHIP.
 
-```{r wins, message=F, warning=F, fig.cap="Distribution of Wins for Lahman data"}
+```{r wins, message=F, warning=F, fig.cap="Distribution of Wins for Lahman data", fig.height=4}
 # create histogram for distribution of wins
 all_years %>% 
   ggplot(aes(W, fill = as.factor(playoffs))) +
@@ -182,7 +193,8 @@ all_years %>%
   labs(title = "Distribution of Wins in the Lahman Data",
        x = "Wins",
        y = "Count",
-       fill = "Playoffs")
+       fill = "Playoffs") +
+  theme_classic()
 ```
 
 Figure \@ref(fig:wins) shows the distribution of wins for teams present in the Lahman data. We see that majority of team make the playoffs when they win about 85 games although there is some spread in the distribution of wins for playoff teams. There are also some teams present which made the playoffs after winning less than 75 games. This occured because of dispute between the players and the league which led to a 50 day strike and led to teams winning less games in total (@cite1981)^[The players eventually returned and the playoffs continued]. 
@@ -298,9 +310,13 @@ Next, we can also take a look at FIP, now that we know it is significant. FIP is
 
 We can talk about oBABIP and WHIP together because they both yield similar results. As shown in Figure \@ref(fig:pitching), having lower oBABIPs and WHIPs both lead to teams winning more games and thus increasing their chances of making the playoffs. This result is confirmed by Table \@ref(tab:coefficients) because it of their negative term. This means that as the pitching numbers increase, the teams will have less of a chance of making the playoffs and both these metrics are backed up by very significant p-values. These two metrics have a similar argument to that of FIP where if a team allows less runs, they'll win more games and in turn, will make the playoffs. 
 
-Lastly, we can look at a Team's payroll and how that impacts their playoff chances. Figure \@ref(fig:payroll) shows us that along the increasing payrolls, teams that had higher payrolls appeared to make the playoffs more often than teams who didn't. We see that in Table \@ref(tab:coefficients), the coefficient for payroll is 0, but upon further inspection it is actually greater than 0 but is very small. This is likely due to the fact that the lowest payroll after making the adjustments was about 780 thousand. This means that for the variable to not completely shift the model's results, it should be very small. Regardless, since the coefficient is small, we can conclude that according to the model having a higher payroll increases a team's chances. This makes sense because one of the only reasons why a team would spend more money would be to try and compete and make the playoffs. We also see in Table \@ref(tab:coefficients) that other than the variable `before_75`, payroll has the highest p-value. This is interesting because it shows that we are more confident that the advanced metrics we have been looking at impact a team's playoff chances more than payroll does. 
+Finally, we can look at a team's payroll and how that impacts their playoff chances. Figure \@ref(fig:payroll) shows us that along the increasing payrolls, teams that had higher payrolls appeared to make the playoffs more often than teams who didn't. We see that in Table \@ref(tab:coefficients), the coefficient for payroll is 0, but upon further inspection it is actually greater than 0 but is very small. This is likely due to the fact that the lowest payroll after making the adjustments was about 780 thousand. This means that for the variable to not completely shift the model's results, it should be very small. Regardless, since the coefficient is small, we can conclude that according to the model having a higher payroll increases a team's chances. This makes sense because one of the only reasons why a team would spend more money would be to try and compete and make the playoffs. We also see in Table \@ref(tab:coefficients) that other than the variable `before_75`, payroll has the highest p-value. This is interesting because it shows that we are more confident that the advanced metrics we have been looking at impact a team's playoff chances more than payroll does. 
 
-Our findings show that the basis of Moneyball was in fact, correct. This is displayed from the suprisingly strong accuracy displayed in Table \@ref(tab:result), to the very significant variables from Table \@ref(tab:coefficients). The point is also validated by the fact that payroll's p-value is the highest of the variables, implying that the model believes more in using advanced metrics to predict playoff probabilities as opposed to payroll.
+We must also acknowledge though that the advanced metrics may not be the gold standard for improving teams. In a FiveThirtyEight article, the authors find that teams that the cinderella stories of teams winning with low payrolls are just outliers and the general trend is that spending more increases your winning percentage (@citepayroll538). This makes me wonder about how we can interpret these results now, maybe, the study should not be focusing on spending less and winning but instead, it should be about spending smart and winning. The authors of the article do mention that although spending more money does improve your chances of winning but "imcompetent spending" does not. This could also explain the relatively high p-value for the payroll variable because there are many teams that will sign players and those players never live up to the contract.
+
+Another issue that can stem from the pursuit of players using advanced metrics is because some General Managers will want to hold onto players that strong analytic front offices want. There have been many players that the Tampa Bay Rays have acquired and almost instantly turned them into superstars. The most recent story was Randy Arozarena who was acquired by Tampa Bay in exchange for one of their top prospects (among others). He played fairly well in the regular season but once he reached the playoffs he went to another level and broke many playoff records (@berry_2020). There are numerous stories like this from Tampa Bay and these occurances have even led people to say "Don't trade with Tampa Bay" because you won't win (@doolittle_2019)^[This article is behind a pay-wall, but it's very likely that there is only good things said about Tampa.]. Teams that get calls from the Rays may be hesitant to trade their prospects or other players after these stories because it's clear that the talent is present, but the Rays somehow bring out the best in the player.
+
+Regardless, our findings show that the basis of Moneyball was in fact, correct. This is displayed from the suprisingly strong accuracy displayed in Table \@ref(tab:result), to the very significant variables from Table \@ref(tab:coefficients). The point is also validated by the fact that payroll's p-value is the highest of the variables, implying that the model believes more in using advanced metrics to predict playoff probabilities as opposed to payroll.
 
 # Weaknesses and Next Steps
 
