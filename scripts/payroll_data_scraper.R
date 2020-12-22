@@ -4,7 +4,9 @@
 # This script scrapes tables from Baseball Reference's misc
 # data page
 
+# install.packages(tidyverse)
 library(tidyverse)
+# install.packages(rvest)
 library(rvest)
 
 
@@ -73,6 +75,8 @@ all_years <- rbind(all_years, table81[[1]], table82[[1]], table83[[1]], table84[
                    table92[[1]], table93[[1]], table94[[1]])
 
 
+# save all of the tables into a list
+
 test <- list(table1[[1]], table2[[1]], table3[[1]], table4[[1]], table5[[1]], table6[[1]],
              table7[[1]], table8[[1]], table19[[1]], table10[[1]], table11[[1]], table12[[1]],
              table13[[1]], table14[[1]], table15[[1]], table16[[1]], table17[[1]], 
@@ -103,10 +107,12 @@ for(i in 95:100){
   test[[i]] <- test[[i]] %>% select(-c(Chall, Succ, `Succ%`))
 }
 
-# add time column that will be 0, it will be removed later anyways
+# add time column that will be 0, it wont be used later on
 for(i in 1:27){
   test[[i]] <- test[[i]] %>% mutate(Time = 0)
 }
+
+# combine all tables into one large table
 
 all_years <- do.call("rbind", test)
 
@@ -159,7 +165,6 @@ all_years <- all_years %>%
                                   ifelse(WCWin == "Y", 1, 0))))
 
 # read in Fangraphs csv for FIP constant
-
 fangraphs <- read_csv("scripts/FanGraphs Leaderboard.csv")
 fangraphs <- fangraphs %>% 
   filter(Season >= 1920)
@@ -181,17 +186,24 @@ all_years <- all_years %>%
          ISO = round(SLG - BA, digits = 3),
 )
 
+# create variable to tell us if team was playing before 1975
 all_years <- all_years %>% 
   mutate(before_75 = ifelse(yearID < 1975, 1, 0))
 
+
+# read in inflation csv
 inflation <- read_csv("scripts/inflation_data.csv")
+
+# create CPI variable
 inflation <- inflation %>% 
   mutate(CPI = (255.657 - Avg)/Avg + 1) %>% 
   select(Year, CPI)
 
+# add in CPI variable into main dataset
 all_years <- all_years %>% 
   left_join(inflation, by = c("yearID" = "Year"))
 
+# create new variable for adjusted payroll
 all_years <- all_years %>% 
   mutate(payroll_adj = payroll*CPI)
 

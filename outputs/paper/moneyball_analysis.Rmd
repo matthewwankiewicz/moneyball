@@ -38,7 +38,7 @@ all_years <- read_csv("all_years.csv")
 
 # Introduction
 
-In 2003, Michael Lewis wrote a book called Moneyball ^[Moneyball was actually the main reason I decided to get into statistics. Applying baseball with numbers seemed like an absolute Win (Above Replacement) to me]. Moneyball is the story of the Oakland Athletics who, after losing players to the richer teams in the league, decided to focus on using the misfits of baseball to try to win a World Series. These "misfits" were players who never received support from teams because their traditional stats didn't look good but they excelled in the "advanced" stats that mattered.
+In 2003, Michael Lewis wrote a book called Moneyball ^[Moneyball was actually the main reason I decided to get into statistics. Applying baseball with numbers seemed like an absolute Win (Above Replacement) to me.]. Moneyball is the story of the Oakland Athletics who, after losing players to the richer teams in the league, decided to focus on using the misfits of baseball to try to win a World Series. These "misfits" were players who never received support from teams because their traditional stats didn't look good but they excelled in the "advanced" stats that mattered.
 
 In this report, I will use logistic regression to test if the basis of Moneyball was correct, can you throw payroll out the window and just focus on advanced statistics? Is it possible to build a cost-effective team that will make the playoffs in a baseball? I decided to put the benchmark of a successful season at making the playoffs because once a baseball team makes the playoffs, anything can happen. Often times, teams will just barely make the playoffs and still be able to win the championship, like the 2019 Washington Nationals. 
 
@@ -84,7 +84,7 @@ all <- all_years %>%
        x = "Year",
        y = "Payroll",
        color = "Playoffs") +
-  scale_color_manual(values = c("grey", "blue")) +
+  scale_color_manual(values = c("grey", "blue"), labels = c("No", "Yes")) +
   theme_classic()
 # plot for payroll vs year, before 75
 before <- all_years %>% 
@@ -96,7 +96,7 @@ before <- all_years %>%
        y = "Payroll",
        subtitle = "Before 1975",
        color = "Playoffs") +
-  scale_color_manual(values = c("grey", "blue")) +
+  scale_color_manual(values = c("grey", "blue"), labels = c("No", "Yes")) +
   theme_classic()
 # plot for payroll vs year, after 75
 after <- all_years %>% 
@@ -108,7 +108,7 @@ after <- all_years %>%
        y = "Payroll",
        subtitle = "After 1975",
        color = "Playoffs") +
-  scale_color_manual(values = c("grey", "blue")) +
+  scale_color_manual(values = c("grey", "blue"), labels = c("No", "Yes")) +
   theme_classic()
 
 # plot the graphs
@@ -129,7 +129,7 @@ woba <- all_years %>%
   labs(title = "wOBA vs Wins",
        x = "Wins",
        color = "Playoffs") +
-  scale_color_manual(values = c("grey", "blue")) +
+  scale_color_manual(values = c("grey", "blue"), labels = c("No", "Yes")) +
   theme_classic() +
   geom_point(alpha = 0.5) +
   geom_vline(xintercept = avg_wins, linetype = "dashed", color = "green")
@@ -141,7 +141,7 @@ so_rate <- all_years %>%
        x = "Wins",
        y = "Strikeout Rate",
        color = "Playoffs") +
-  scale_color_manual(values = c("grey", "blue")) +
+  scale_color_manual(values = c("grey", "blue"), labels = c("No", "Yes")) +
   theme_classic() +
   geom_vline(xintercept = avg_wins, linetype = "dashed", color = "green")
 # plot graphs
@@ -156,22 +156,22 @@ I have also added a green line at the amount of wins that teams generally make t
 ```{r pitching, fig.cap="Relationship between Advanced Pitching Metrics and Wins"}
 # create plot for FIP vs wins 
 fip <- all_years %>% 
-  ggplot(aes(W, FIP, color = as.factor(playoffs), alpha = 0.5)) + 
-  geom_point() +
+  ggplot(aes(W, FIP, color = as.factor(playoffs))) + 
+  geom_point(alpha = 0.4) +
   labs(title = "FIP vs Wins",
        x = "Wins",
        color = "Playoffs") +
-  scale_color_manual(values = c("grey", "blue")) +
+  scale_color_manual(values = c("grey", "blue"), labels = c("No", "Yes")) +
   theme_classic() +
   geom_vline(xintercept = avg_wins, linetype = "dashed", color = "green")
 # create plot for WHIP vs wins
 whip <- all_years %>% 
   ggplot(aes(W, WHIP, color = as.factor(playoffs))) +
-  geom_point(alpha = 0.5) + 
+  geom_point(alpha = 0.4) + 
   labs(title = "WHIP vs Wins",
        x = "Wins",
        color = "Playoffs") +
-  scale_color_manual(values = c("grey", "blue")) +
+  scale_color_manual(values = c("grey", "blue"), labels = c("No", "Yes")) +
   theme_classic() +
   geom_vline(xintercept = avg_wins, linetype = "dashed", color = "green")
 pitch1 <- plot_grid(fip, whip)
@@ -183,7 +183,7 @@ babip <- all_years %>%
        x = "Wins",
        y = "BABIP against",
        color = "Playoffs") +
-  scale_color_manual(values = c("grey", "blue")) +
+  scale_color_manual(values = c("grey", "blue"), labels = c("No", "Yes")) +
   theme_classic() +
   geom_vline(xintercept = avg_wins, linetype = "dashed", color = "green")
 # plot graphs
@@ -199,7 +199,7 @@ Figure \@ref(fig:pitching) shows the relationship between some advanced pitching
 all_years %>% 
   ggplot(aes(W, fill = as.factor(playoffs))) +
   geom_histogram() +
-  scale_fill_manual(values = c("grey", "blue")) +
+  scale_fill_manual(values = c("grey", "blue"), labels = c("No", "Yes")) +
   labs(title = "Distribution of Wins in the Lahman Data",
        x = "Wins",
        y = "Count",
@@ -217,11 +217,11 @@ In order to get playoff probabilites, I will use logistic regression. Logistic r
 
 \begin{equation} 
   log(\frac{\hat{p}}{1 - \hat{p}}) = \beta_{0} + \beta_{1}x_{FIP} + \beta_{2}x_{wOBA} +
-  \beta_{3}x_{oBABIP} + \beta_{4}x_{SOrate} + \beta_{5}x_{before75} + \beta_{6}x_{payroll}
+  \beta_{3}x_{oBABIP} + \beta_{4}x_{WHIP} + \beta_{5}x_{SOrate} + \beta_{6}x_{before75} + \beta_{7}x_{payroll}
   (\#eq:logit)
 \end{equation} 
 
-where $x_{FIP}$ represents the team's FIP, $x_{wOBA}$ represents the team's wOBA, $x_{oBABIP}$ represents the team's BABIP against, $x_{SOrate}$ represents the team's strikeout rate, $x_{before75}$ represent whether the team in question was playing before 1975 or not and $x_{payroll}$ represents the team's payroll. The variable `before_75` was added to the model, to help create different slopes for teams that played in the two different eras, this was done because there was a rapid increase in payroll around that time. All of the variables are numerical variables expect for `before_75` which is binary.
+where $x_{FIP}$ represents the team's FIP, $x_{wOBA}$ represents the team's wOBA, $x_{oBABIP}$ represents the team's BABIP against, $x_{WHIP}$ represents the team's WHIP, $x_{SOrate}$ represents the team's strikeout rate, $x_{before75}$ represent whether the team in question was playing before 1975 or not and $x_{payroll}$ represents the team's payroll. The variable `before_75` was added to the model, to help create different slopes for teams that played in the two different eras, this was done because there was a rapid increase in payroll around that time. All of the variables are numerical variables expect for `before_75` which is binary.
 
 In Equation \@ref(eq:logit), the $\beta$ values represent a coefficient determined by the `glm` function, they will either be positive or negative, depending on if a higher $x_i$ value increases or decreases a team's chances of making the playoffs. Each $\beta$ value will be multiplied by it's corresponding x, for example, as we saw in the data section, teams with higher wOBA's tend to make the playoffs more often, so the $\beta$ value for $x_{wOBA}$ will likely be positive. Once all of the coefficients are multiplied we take the sum of the equation and insert it into the equation below:
 
@@ -232,7 +232,7 @@ In Equation \@ref(eq:logit), the $\beta$ values represent a coefficient determin
 
 Equation \@ref(eq:prob) is just a manipulation of equation \@ref(eq:logit), where $e$ is the exponential equation and $sum$ is the sum of the right side of equation \@ref(eq:logit). We can see that as the sum of the equation increases, the probability of a team making the playoffs increases as well. 
 
-The logistic regression model is run using the `glm()` function in R (@citeR). The decision to run this model over other models like linear regression was made by the fact that we are predicting a binary variable of a team's success in the season. Since there are only two possible options our data will likely follow an S shape. This is one of the benefits of using logistic regression because it allows us to capture as many points as possible because of how flexible the equation can be. 
+The logistic regression model is run using the `glm()` function in R (@citeR). The decision to run this model over other models like linear regression was made by the fact that we are predicting a binary variable of a team's success in the season. Since there are only two possible options our data will likely follow an S shape. This is one of the benefits of using logistic regression because it allows us to capture as many points as possible because of how flexible the equation can be. Another benefit is that we get a probability which, in a way, shows how confident that the model is that a team will make the playoffs. For this report, I count teams that had a probability of over 50% playoff probability as making the playoffs. So if a team with a probability of 50% does not make the playoffs, it wouldn't be as concerning as a team with 90% probability not making it.
 
 Another option for a regression line would have been linear regression. In this case, instead of getting a probability, we would get a value (1 or 0). This type of regression would not work well when modelling a team's ability to make the playoffs because the regression line would likely miss most of the data points.
 
@@ -265,7 +265,35 @@ coefficients %>%
 
 Table \@ref(tab:coefficients) shows us the coefficients from our logistic regression model^[Created using the `tidy` function from the `broom` package (@citebroom)]. We can see that all variables have statistically significant p-values, meaning that we know for sure that the variables have an effect on a team's playoff chances. An important point to note from Table \@ref(tab:coefficients) is that the p-value for payroll is less significant than the advanced metrics. This means that although it is significant to predicting success, we are less confident in its abilities compared to the advanced metrics.
 
-We see that using the logistic regression equation, the lowest possible probability of making the playoffs is $4.23*10^{-5}$ percent. This was calculated using the worst possible stats present in the data used and it is extremely unlikely a team would be this bad! The highest possible probability of making the playoffs is 99.99 percent. This was taken from the maximum stats present in the data, and although it would be tough for a team like this to exist, there have been some teams that were close. 
+Using the coefficients displayed in Table \@ref(tab:coefficients), the regression equation we end up with is:
+
+**Equation 3:**
+
+$$
+\begin{aligned} 
+  log(\frac{\hat{p}}{1 - \hat{p}}) = -6.7 - 2.86x_{FIP} + 113.29x_{wOBA} -
+  38.71x_{oBABIP}\\
+  - 8.19x_{WHIP} + 10.3x_{SOrate} - .4x_{before75} + 6.07*10^{-09}x_{payroll}
+\end{aligned} 
+$$
+
+From Equation 3 we can see that having high FIP, WHIP, and oBABIP will lead to a lower chance of making the playoffs. But, if teams get a higher wOBA and SO_rate, they have a higher chance at making the playoffs.
+
+```{r pvalues, fig.cap="P-values of the terms of the regression equation", fig.height=2.5}
+coefficients %>% 
+  ggplot(aes(term, p.value)) +
+  geom_bar(stat = "identity") +
+  labs(title = "P-values from the Regression Model",
+       x = "Term",
+       y = "P-value",
+       subtitle = "Red line shows cut-off mark") +
+  theme_classic() +
+  geom_hline(yintercept = 0.05, color = "red", linetype = "dashed")
+```
+
+Figure \@ref(fig:pvalues) shows the p-values of all terms used in the regression equation. A p-value is run under a hypothesis which says that a variable has no impact in what it is trying to predict. If the p-value is small, it implies that the variable has a significant impact. In most cases we use a significance level of 0.05 to determine if a variable is significant and that is what I will be using. If the p-value is under 0.05, we can conclude that the variable is significant. We see that `before_75` has the highest p-value while FIP, oBABIP and wOBA all appear to have p-values that are pretty much 0.
+
+We can also see that using equation 3, the lowest possible probability of making the playoffs is $4.23*10^{-5}$ percent. This was calculated using the worst possible stats present in the data used and it is extremely unlikely a team would be this bad! The highest possible probability of making the playoffs is 99.99 percent. This was taken from the maximum stats present in the data, and although it would be tough for a team like this to exist, there have been some teams that were close. 
 
 ```{r result}
 # create new dataframe so we can display prediction
@@ -316,8 +344,6 @@ We can also look at the overall accuracy of the model. In order to find the accu
 
 Now that the model has been created (and tested) and we have our results, what can we make of them? Well, the first major point we can see is that when using advanced statistics, we can accurately predict if a team will make the playoffs 88 percent of the time. This result is truly significant because it means that if a team put their focus on acquiring players who excel in advanced statistics but are average in the 'regular' ones, they can drastically improve their chances of making the playoffs. We also see from table \@ref(tab:result) that in the original data, about 19 percent of teams made the playoffs while the model's predictions only had predicted about 15 percent of teams to make it. This makes sense because there are usually outliers in seasons, where teams who appear to not have a chance at making the playoffs defy the odds and make it. We can also observe the opposite, really good teams not making the playoffs because there aren't enough spots. There have been many teams in the past that have won over 100 games in a season but since there were less playoff spots available like the 1993 San Francisco Giants who won 103 games but still missed the playoffs (@adler_2019).
 
-This next part of the discussion will focus on each variable's p-value. A p-value is run under a hypothesis which says that a variable has no impact in what it is trying to predict. If the p-value is small, it implies that the variable has a significant impact. In most cases we use a significance level of 0.05 to determine if a variable is significant and that is what I will be using. If the p-value is under 0.05, we can conclude that the variable is significant. In this case, as seen in Table \@ref(tab:coefficients), all of the p-values present are under 0.05 except `before_75` which was just a variable used for classification.
-
 When looking at our batting stats, we see that wOBA is very influential in determining a team's playoff status. As we see in table \@ref(tab:coefficients), the p-value for wOBA's influence on playoff chances in practically 0. If teams are still evaluating players using traditional statisitics, they have a much higher chance of paying for a player who may not have a significant impact on their playoffs chances compared to players who excel in the advanced metrics. Taking a quick look at Fangraphs' wOBA leaderboard from 2019^[We're going to focus on 2019 because the 2020 season was just a really small sample size] we see that 6 of the top ten players in wOBA were not in the top 10 for batting average. This shows that some of the players that would be looked at as elite according to the advanced metrics can be overlooked by teams that focus on the traditional stats and if teams make the shift to stats like wOBA, they certainly won't be hurting their chances at making the playoffs. 
 
 We can also take a look at the strikeout rate of teams. As we saw in Figure \@ref(fig:offense), it didn't appear as if a team's strikeout rate had any impact on the amount of games a team won. This makes sense due to the various different play styles that have been popularized over the years. Some teams have adopted the style of go big or go home when they go up to bat, either hit a home run or strikeout. This type of play has been fairly popular over the past few years and was especially popular during the "Steroid Era" in the early 2000s when the league saw an rise in offense due to steroids (@citeeras). Table \@ref(tab:coefficients) shows that having a high strikeout rate actually improves a teams chances of making the playoffs, so according to the model, the go big or go home strategy appears to lead to success.
@@ -338,7 +364,7 @@ Regardless, our findings show that the basis of Moneyball was in fact, correct. 
 
 This analysis has had some great results, but there are some weaknesses we must address which may have impacted the analysis. Firstly, it would have been more preferable to have a larger data set. As mentioned in the data section, I had to remove entries because of the missing payroll data and even before that, there was only about 2200 observations. Ideally, we would want more observations but since there are only 30 teams playing each year, we have to make it work. Another weakness I encountered was that the payroll data did not fully translate from 1920 to 2019. Even though I did adjust the payrolls to account for inflation of the dollar, there was still a large difference in spending now compared to 100 years ago. This just shows that teams decided to spend more money than they did in the past but this was accounted for in the model by adding a term to tell us if the team played before 1975 (just after the spike in pay began). 
 
-When looking at potential future steps for analyses after this one, there are many different routes we can take. One potential route we could take is looking at the statistical value of a single player's contract and also look at their statistical impact on the team. This analysis looked at the impact of a whole teams payroll and performance but going in depth on a players impact would certainly be an interesting topic to research. Another topic we could look at is using this model to predict the next season's results. Right now the model is constructed to use current year metrics to predict playoff probabilities for that same season, but if it was possible to predict expand that to the next season, it would once again be an amazing application of the model.
+When looking at potential future steps for analyses after this one, there are many different routes we can take. One potential route we could take is looking at the statistical value of a single player's contract and also look at their statistical impact on the team. This analysis looked at the impact of a whole teams payroll and performance but going in depth on a players impact would certainly be an interesting topic to research. Another topic we could look at is using this model to predict the next season's results. Right now the model is constructed to use current year metrics to predict playoff probabilities for that same season, but if it was possible to predict expand that to the next season, it would once again be an amazing application of the model. Lastly, the advanced metrics used for this analysis were some of the more basic metrics present in baseball today. In the future it may be useful to determine if there is a relationship between how teams actually throw/hit the ball and their success. The `baseballr` package in R contains a scraper which collects data from MLB's statcast data which looks at things like launch angle and exit velocity along with other useful data. Seeing if there is a relationship between teams that excel in statcast data and their success would be useful, especially because it seems like the MLB is moving in that direction.
 
 \newpage
 # References
