@@ -1,7 +1,7 @@
 ---
 title: "Using Logistic Regression to Predict Baseball Playoff Probabilities"
 author: "Matthew Wankiewicz"
-date: "26/11/2020"
+date: "December 22, 2020"
 bibliography: references.bib
 abstract: "Over the years, there has been a rapid increase in spending on players in professional sports and in particular baseball, due to the lack of a salary cap. This increase in spending, along with the statistical was countered by a statistical revolution started by the 2003 Oakland Athletics as highlighted in the book 'Moneyball'. In this report, logistic regression to determine whether the advanced stats that stemmed from this revolution are useful for predicting a team's success and we find that the model is 88 percent accurate on predicting a team's success. This is a significant finding as it shows that these advanced metrics are extremely useful for predicting a team's success and shows that a greater emphasis must be placed on these metrics."
 output:
@@ -48,7 +48,7 @@ After using the model, we find that the advanced metrics are fairly accurate in 
 
 The data collected for this analysis was from the `Lahman` package in R (@citeLahman) and Baseball-Reference (@citebbref). Fangraphs (@citefangraphs) was also used to help calculate one of the statistics. 
 
-This data analysis was conducted using R (@citeR), and in particular the packages Tidyverse (@citeTidyverse) and Cowplot (@citecowplot) and was compiled using R markdown (@citermarkdown). This paper includes 4 sections not including the introduction. The first section covers the data I used for my report, including a few plots to show how the distributions and relationships between various stats. The next section is about the model I used, this will include an in-depth breakdown of logistic regression. Next, I will display the results of my model, this will include the coefficients of the model and an interpretation of the model, along with an application of the model to see how accurate its predictions are. Lastly, there is a section discussing what we learn from this model and some next steps. Was Moneyball right? Can advanced metrics lead us to the playoffs?
+This data analysis was conducted using R (@citeR), and in particular the packages Tidyverse (@citeTidyverse) and Cowplot (@citecowplot) and was compiled using R markdown (@citermarkdown). This paper includes 4 sections not including the introduction. The first section covers the data I used for my report, including a few plots to show how the distributions and relationships between various stats. The next section is about the model I used, this will include an in-depth breakdown of logistic regression. Next, I will display the results of my model, this will include the coefficients of the model and an interpretation of the model, along with an application of the model to see how accurate its predictions are. Lastly, there is a section discussing what we learn from this model and some next steps. Was Moneyball right? Can advanced metrics lead a team to the playoffs?
 
 
 # Data
@@ -118,71 +118,81 @@ plot_grid(all, bottom, nrow = 2)
 
 Figure \@ref(fig:payroll) shows us the increase in payroll over the years, starting at 1920 and ending at 2019. We see that up until 1960, payrolls were fairly constant but after the 60s we have seen a rapid increase in payroll. We can also see colours which represent if a team made the playoffs or not (light blue representing yes and dark blue meaning no). It is clear that in most seasons, teams that spend more make the playoffs. The salaries have been adjusted to represent the dollar in terms of what it would be in 2019 using inflation rates from the US Inflation Calculator (@citeUSINF). Clearly, the adjustment does not do much as we see that teams were likely just spending more compared to the past.
 
-
 ```{r offense, fig.cap="Relationship between Advanced Offense Metrics and Wins"}
+# find average number of wins to make playoffs, will be used for future plot
+playoff_teams <- all_years %>% filter(playoffs == 1)
+avg_wins <- mean(playoff_teams$W)
 # create plot for woba vs wins
 woba <- all_years %>% 
   ggplot(aes(W, wOBA, color = as.factor(playoffs))) + 
-  geom_point() +
+  geom_vline(xintercept = avg_wins, linetype = "dashed", color = "green") +
   labs(title = "wOBA vs Wins",
        x = "Wins",
        color = "Playoffs") +
   scale_color_manual(values = c("grey", "blue")) +
-  theme_classic()
+  theme_classic() +
+  geom_point(alpha = 0.5) +
+  geom_vline(xintercept = avg_wins, linetype = "dashed", color = "green")
 # create plot for strikeout rate vs wins
 so_rate <- all_years %>% 
   ggplot(aes(W, SO_rate, color = as.factor(playoffs))) + 
-  geom_point() +
+  geom_point(alpha = 0.5) +
   labs(title = "Strikeout Rate vs Wins",
        x = "Wins",
        y = "Strikeout Rate",
        color = "Playoffs") +
   scale_color_manual(values = c("grey", "blue")) +
-  theme_classic()
+  theme_classic() +
+  geom_vline(xintercept = avg_wins, linetype = "dashed", color = "green")
 # plot graphs
 plot_grid(woba, so_rate, 
           nrow = 2)
 ```
 
-Figure \@ref(fig:offense) shows the relationship between offensive advanced metrics and the amount of teams a win gets, along with colours representing a team's ability to make the playoffs. From the first graphs, we see that as wOBA increases, the amount of wins increases and the number of teams making the playoffs increases as well. We also see that there does not appear to be too much of a relationship between the number of wins a team gets and their strikeout rate. This makes sense because some teams are built on hitting home runs and strikeout a lot, versus teams who play more strategically and don't hit the ball as hard.
+Figure \@ref(fig:offense) shows the relationship between offensive advanced metrics and the amount of teams a win gets, along with colours representing a team's ability to make the playoffs. From the first graphs, we see that as wOBA increases, the amount of wins increases and the number of teams making the playoffs increases as well. We also see that there does not appear to be too much of a relationship between the number of wins a team gets and their strikeout rate. This makes sense because some teams are built on hitting home runs and strikeout a lot, versus teams who play more strategically and don't hit the ball as hard. 
+
+I have also added a green line at the amount of wins that teams generally make the playoffs. For teams that made the playoffs, they had an average of about 94 wins. 
 
 ```{r pitching, fig.cap="Relationship between Advanced Pitching Metrics and Wins"}
 # create plot for FIP vs wins 
 fip <- all_years %>% 
-  ggplot(aes(W, FIP, color = as.factor(playoffs))) + 
+  ggplot(aes(W, FIP, color = as.factor(playoffs), alpha = 0.5)) + 
   geom_point() +
   labs(title = "FIP vs Wins",
        x = "Wins",
        color = "Playoffs") +
   scale_color_manual(values = c("grey", "blue")) +
-  theme_classic()
+  theme_classic() +
+  geom_vline(xintercept = avg_wins, linetype = "dashed", color = "green")
 # create plot for WHIP vs wins
 whip <- all_years %>% 
   ggplot(aes(W, WHIP, color = as.factor(playoffs))) +
-  geom_point() + 
+  geom_point(alpha = 0.5) + 
   labs(title = "WHIP vs Wins",
        x = "Wins",
        color = "Playoffs") +
   scale_color_manual(values = c("grey", "blue")) +
-  theme_classic()
+  theme_classic() +
+  geom_vline(xintercept = avg_wins, linetype = "dashed", color = "green")
 pitch1 <- plot_grid(fip, whip)
 # create plot for oBABIP vs wins
 babip <- all_years %>% 
   ggplot(aes(W, oBABIP, color = as.factor(playoffs))) +
-  geom_point() +
+  geom_point(alpha = 0.5) +
   labs(title = "oBABIP vs Wins",
        x = "Wins",
        y = "BABIP against",
        color = "Playoffs") +
   scale_color_manual(values = c("grey", "blue")) +
-  theme_classic()
+  theme_classic() +
+  geom_vline(xintercept = avg_wins, linetype = "dashed", color = "green")
 # plot graphs
 plot_grid(pitch1, babip,
           nrow = 2)
 ```
 
 
-Figure \@ref(fig:pitching) shows the relationship between some advanced pitching metrics and the amount of wins a team gets in a season. We see that WHIP appears to have a very strong impact on wins and if a team can keep their WHIP as low as possible, they're more likely to make the playoffs. It appears that FIP has the next strongest relationship with wins, better teams have lower FIPs. Lastly, it appears that BABIP against does have an impact on the amount of wins a team gets, just not as significant as FIP and WHIP.
+Figure \@ref(fig:pitching) shows the relationship between some advanced pitching metrics and the amount of wins a team gets in a season. We see that WHIP appears to have a very strong impact on wins and if a team can keep their WHIP as low as possible, they're more likely to make the playoffs. It appears that FIP has the next strongest relationship with wins, better teams have lower FIPs. Lastly, it appears that BABIP against does have an impact on the amount of wins a team gets, just not as significant as FIP and WHIP. Once again, the green line represents the average amount of wins a playoff team gets.
 
 ```{r wins, message=F, warning=F, fig.cap="Distribution of Wins for Lahman data", fig.height=4}
 # create histogram for distribution of wins
@@ -193,8 +203,10 @@ all_years %>%
   labs(title = "Distribution of Wins in the Lahman Data",
        x = "Wins",
        y = "Count",
-       fill = "Playoffs") +
-  theme_classic()
+       fill = "Playoffs",
+       subtitle = "Green line represents average amount of wins for playoff team") +
+  theme_classic() +
+  geom_vline(xintercept = avg_wins, linetype = "dashed", color = "green")
 ```
 
 Figure \@ref(fig:wins) shows the distribution of wins for teams present in the Lahman data. We see that majority of team make the playoffs when they win about 85 games although there is some spread in the distribution of wins for playoff teams. There are also some teams present which made the playoffs after winning less than 75 games. This occured because of dispute between the players and the league which led to a 50 day strike and led to teams winning less games in total (@cite1981)^[The players eventually returned and the playoffs continued]. 
@@ -246,7 +258,7 @@ Figure \@ref(fig:cooks) shows us the observed cook's distances for the model. Co
 coefficients %>% 
   kable(digits = 5,
         caption = "Regression Model Coefficients") %>% 
-  kable_styling()
+  kable_styling(latex_options = "hold_position")
 ```
 
 Table \@ref(tab:coefficients) shows us the coefficients from our logistic regression model^[Created using the `tidy` function from the `broom` package (@citebroom)]. We can see that all variables have statistically significant p-values, meaning that we know for sure that the variables have an effect on a team's playoff chances. An important point to note from Table \@ref(tab:coefficients) is that the p-value for payroll is less significant than the advanced metrics. This means that although it is significant to predicting success, we are less confident in its abilities compared to the advanced metrics.
@@ -291,7 +303,7 @@ props <- props %>%
 props %>%  
   kable(digits = 3, 
         caption = "Accuracy of the Model") %>% 
-  kable_styling()
+  kable_styling(latex_options = "hold_position")
 ```
 
 Table \@ref(tab:result) displays the proportion of teams which made the playoffs from the observed data vs the results of our model's predictions. We can see that the model is very strict with its results, only predicted about 15 percent of teams to make the playoffs, less than the observed 18.9 percent. 
@@ -300,9 +312,11 @@ We can also look at the overall accuracy of the model. In order to find the accu
 
 # Discussion
 
-Now that the model has been created (and tested) and we have our results, what can we make of them? Well, the first major point we can see is that when using advanced statistics, we can accurately predict if a team will make the playoffs 88 percent of the time. This result is truly significant because it means that if a team put their focus on acquiring players who excel in advanced statistics but are average in the 'regular' ones, they can drastically improve their chances of making the playoffs. 
+Now that the model has been created (and tested) and we have our results, what can we make of them? Well, the first major point we can see is that when using advanced statistics, we can accurately predict if a team will make the playoffs 88 percent of the time. This result is truly significant because it means that if a team put their focus on acquiring players who excel in advanced statistics but are average in the 'regular' ones, they can drastically improve their chances of making the playoffs. We also see from table \@ref(tab:result) that in the original data, about 19 percent of teams made the playoffs while the model's predictions only had predicted about 15 percent of teams to make it. This makes sense because there are usually outliers in seasons, where teams who appear to not have a chance at making the playoffs defy the odds and make it. We can also observe the opposite, really good teams not making the playoffs because there aren't enough spots. There have been many teams in the past that have won over 100 games in a season but since there were less playoff spots available like the 1993 San Francisco Giants who won 103 games but still missed the playoffs (@adler_2019).
 
-When looking at our batting stats, we see that wOBA is very influential in determining a team's playoff status. Taking a quick look at Fangraphs' wOBA leaderboard from 2019^[We're going to focus on 2019 because the 2020 season was just a really small sample size] we see that 6 of the top ten players in wOBA were not in the top 10 for batting average. If teams are still evaluating players using traditional statisitics, they have a much higher chance of paying for a player who may not have a significant impact on their playoffs chances. If teams make the shift to stats like wOBA, they certainly won't be hurting their chances at making the playoffs. 
+This next part of the discussion will focus on each variable's p-value. A p-value is run under a hypothesis which says that a variable has no impact in what it is trying to predict. If the p-value is small, it implies that the variable has a significant impact. In most cases we use a significance level of 0.05 to determine if a variable is significant and that is what I will be using. If the p-value is under 0.05, we can conclude that the variable is significant. In this case, as seen in Table \@ref(tab:coefficients), all of the p-values present are under 0.05 except `before_75` which was just a variable used for classification.
+
+When looking at our batting stats, we see that wOBA is very influential in determining a team's playoff status. As we see in table \@ref(tab:coefficients), the p-value for wOBA's influence on playoff chances in practically 0. If teams are still evaluating players using traditional statisitics, they have a much higher chance of paying for a player who may not have a significant impact on their playoffs chances compared to players who excel in the advanced metrics. Taking a quick look at Fangraphs' wOBA leaderboard from 2019^[We're going to focus on 2019 because the 2020 season was just a really small sample size] we see that 6 of the top ten players in wOBA were not in the top 10 for batting average. This shows that some of the players that would be looked at as elite according to the advanced metrics can be overlooked by teams that focus on the traditional stats and if teams make the shift to stats like wOBA, they certainly won't be hurting their chances at making the playoffs. 
 
 We can also take a look at the strikeout rate of teams. As we saw in Figure \@ref(fig:offense), it didn't appear as if a team's strikeout rate had any impact on the amount of games a team won. This makes sense due to the various different play styles that have been popularized over the years. Some teams have adopted the style of go big or go home when they go up to bat, either hit a home run or strikeout. This type of play has been fairly popular over the past few years and was especially popular during the "Steroid Era" in the early 2000s when the league saw an rise in offense due to steroids (@citeeras). Table \@ref(tab:coefficients) shows that having a high strikeout rate actually improves a teams chances of making the playoffs, so according to the model, the go big or go home strategy appears to lead to success.
 
@@ -318,7 +332,7 @@ Another issue that can stem from the pursuit of players using advanced metrics i
 
 Regardless, our findings show that the basis of Moneyball was in fact, correct. This is displayed from the suprisingly strong accuracy displayed in Table \@ref(tab:result), to the very significant variables from Table \@ref(tab:coefficients). The point is also validated by the fact that payroll's p-value is the highest of the variables, implying that the model believes more in using advanced metrics to predict playoff probabilities as opposed to payroll.
 
-# Weaknesses and Next Steps
+## Weaknesses and Next Steps
 
 This analysis has had some great results, but there are some weaknesses we must address which may have impacted the analysis. Firstly, it would have been more preferable to have a larger data set. As mentioned in the data section, I had to remove entries because of the missing payroll data and even before that, there was only about 2200 observations. Ideally, we would want more observations but since there are only 30 teams playing each year, we have to make it work. Another weakness I encountered was that the payroll data did not fully translate from 1920 to 2019. Even though I did adjust the payrolls to account for inflation of the dollar, there was still a large difference in spending now compared to 100 years ago. This just shows that teams decided to spend more money than they did in the past but this was accounted for in the model by adding a term to tell us if the team played before 1975 (just after the spike in pay began). 
 
