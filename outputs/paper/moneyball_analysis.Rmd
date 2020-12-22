@@ -38,7 +38,7 @@ all_years <- read_csv("all_years.csv")
 
 # Introduction
 
-In 2003, Michael Lewis wrote a book called Moneyball ^[Moneyball was actually the main reason I decided to get into statistics. Applying baseball with numbers seemed like an absolute win to me]. Moneyball is the story of the Oakland Athletics who, after losing players to the richer teams in the league, decided to focus on using the misfits of baseball to try to win a World Series. These "misfits" were players who never received support from teams because their traditional stats didn't look good but they excelled in the "advanced" stats that mattered.
+In 2003, Michael Lewis wrote a book called Moneyball ^[Moneyball was actually the main reason I decided to get into statistics. Applying baseball with numbers seemed like an absolute Win (Above Replacement) to me]. Moneyball is the story of the Oakland Athletics who, after losing players to the richer teams in the league, decided to focus on using the misfits of baseball to try to win a World Series. These "misfits" were players who never received support from teams because their traditional stats didn't look good but they excelled in the "advanced" stats that mattered.
 
 In this report, I will use logistic regression to test if the basis of Moneyball was correct, can you throw payroll out the window and just focus on advanced statistics? Is it possible to build a cost-effective team that will make the playoffs in a baseball? I decided to put the benchmark of a successful season at making the playoffs because once a baseball team makes the playoffs, anything can happen. Often times, teams will just barely make the playoffs and still be able to win the championship, like the 2019 Washington Nationals. 
 
@@ -213,7 +213,7 @@ Figure \@ref(fig:wins) shows the distribution of wins for teams present in the L
 
 # Model
 
-In order to get playoff probabilites, I will use logistic regression. Logistic regression is a type of statistical analysis that instead of giving a prediction as to what a value will be, it gives the probability that an event will happen. In this case, logistic regression is used to determine the probability that a team will be making the playoffs. Logistic regression takes a sum of various factors and then after manipulating the equation, we will end up with a probability. The logistic regression will be in the form:
+In order to get playoff probabilites, I will use logistic regression. Logistic regression is a type of statistical modelling which is mainly used when the variable you are trying to predict is binary (only two options). Logistics regression is best used to model binary variables because instead of predicting a certain value, it gives the probability that an event will occur. For this report, logistic regression is used to determine the probability that a team will make the playoffs. Logistic regression is similar to other types of regression, where $\beta$ values are assigned for each $x_i$. It then takes the sum of these factors and then after manipulating the equation, we will end up with a probability. The logistic regression will be in the form:
 
 \begin{equation} 
   log(\frac{\hat{p}}{1 - \hat{p}}) = \beta_{0} + \beta_{1}x_{FIP} + \beta_{2}x_{wOBA} +
@@ -221,9 +221,9 @@ In order to get playoff probabilites, I will use logistic regression. Logistic r
   (\#eq:logit)
 \end{equation} 
 
-where $x_{FIP}$ represents the team's FIP, $x_{wOBA}$ represents the team's wOBA, $x_{oBABIP}$ represents the team's BABIP against, $x_{SOrate}$ represents the team's strikeout rate, $x_{before75}$ represent whether the team in question was playing before 1975 or not and $x_{payroll}$ represents the team's payroll.
+where $x_{FIP}$ represents the team's FIP, $x_{wOBA}$ represents the team's wOBA, $x_{oBABIP}$ represents the team's BABIP against, $x_{SOrate}$ represents the team's strikeout rate, $x_{before75}$ represent whether the team in question was playing before 1975 or not and $x_{payroll}$ represents the team's payroll. The variable `before_75` was added to the model, to help create different slopes for teams that played in the two different eras, this was done because there was a rapid increase in payroll around that time. All of the variables are numerical variables expect for `before_75` which is binary.
 
-In Equation \@ref(eq:logit), the $\beta$ values represent a coefficient determined by the `glm` function, the will either be positive or negative, depending on if a higher x values increases or decreases a team's chances of making the playoffs. Each $\beta$ value will be multiplied by it's corresponding x, for example, as we saw in the data section, teams with higher wOBA's tend to make the playoffs more often, so the $\beta$ value for $x_{wOBA}$ will likely be positive. Once all of the coefficients are multiplied we take the sum of the equation and insert it into the equation below:
+In Equation \@ref(eq:logit), the $\beta$ values represent a coefficient determined by the `glm` function, they will either be positive or negative, depending on if a higher $x_i$ value increases or decreases a team's chances of making the playoffs. Each $\beta$ value will be multiplied by it's corresponding x, for example, as we saw in the data section, teams with higher wOBA's tend to make the playoffs more often, so the $\beta$ value for $x_{wOBA}$ will likely be positive. Once all of the coefficients are multiplied we take the sum of the equation and insert it into the equation below:
 
 \begin{equation} 
   \frac{e^{sum}}{1+e^{sum}}
@@ -232,9 +232,11 @@ In Equation \@ref(eq:logit), the $\beta$ values represent a coefficient determin
 
 Equation \@ref(eq:prob) is just a manipulation of equation \@ref(eq:logit), where $e$ is the exponential equation and $sum$ is the sum of the right side of equation \@ref(eq:logit). We can see that as the sum of the equation increases, the probability of a team making the playoffs increases as well. 
 
-The logistic regression model is run using the `glm()` function in R (@citeR). The decision to run this model over other models like linear regression was made by the fact that we are predicting a binary variable of a team's success in the season. Since there are only two possible options our data will likely follow an S shape and a straight line equation will not be helpful to model this relationship. As a straight line regression will likely miss many data points.
+The logistic regression model is run using the `glm()` function in R (@citeR). The decision to run this model over other models like linear regression was made by the fact that we are predicting a binary variable of a team's success in the season. Since there are only two possible options our data will likely follow an S shape. This is one of the benefits of using logistic regression because it allows us to capture as many points as possible because of how flexible the equation can be. 
 
-One weakness present with a logistic regression model is that since the response variable must be binary (either make the playoffs or don't), we cannot expand it to determine if a team wins their division or just scrapes into the playoffs.
+Another option for a regression line would have been linear regression. In this case, instead of getting a probability, we would get a value (1 or 0). This type of regression would not work well when modelling a team's ability to make the playoffs because the regression line would likely miss most of the data points.
+
+While logistic regression does work well for this scenario, there are some flaws which limit what we can do with it. Since logistic regression works for binary variables, we can only use variables which have yes or no answers, like "did a team make the playoffs?" This limits our analysis because it would be useful to determine if a team made the playoffs as the best team in the league or they just barely made it. 
 
 ```{r model}
 # create glm model
