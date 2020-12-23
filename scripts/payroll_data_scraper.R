@@ -26,13 +26,11 @@ for(i in 1920:end_year){
 ## get tables for each year, I broke it up into intervals of 20
 ## to not strain the servers
 
-for(i in 1920:2019){
-  for(j in 1:100){
-    table[[j]] %>% mutate(yearID = i)
-  }
+for(i in 1:20){
+  assign(paste0("table", i), read_html(years[i]) %>% html_table())
 }
 
-for(i in 1:20){
+for(i in 21:40){
   assign(paste0("table", i), read_html(years[i]) %>% html_table())
 }
 
@@ -43,10 +41,6 @@ all_years <- rbind(table1[[1]], table2[[1]], table3[[1]], table4[[1]], table5[[1
                    table25[[1]], table26[[1]], table27[[1]])
 all_years <- all_years %>% 
   mutate(Time = 0)
-
-for(i in 21:40){
-  assign(paste0("table", i), read_html(years[i]) %>% html_table())
-}
 
 all_years <- rbind(all_years, table28[[1]], table29[[1]],
                    table30[[1]], table31[[1]], table32[[1]], table33[[1]], table34[[1]],
@@ -77,6 +71,8 @@ for(i in 81:100){
 all_years <- rbind(all_years, table81[[1]], table82[[1]], table83[[1]], table84[[1]], table85[[1]],
                    table86[[1]], table87[[1]], table88[[1]], table89[[1]], table90[[1]], table91[[1]],
                    table92[[1]], table93[[1]], table94[[1]])
+
+# not fully sure if the all_years does anything, but im keeping it to be safe.
 
 
 # save all of the tables into a list
