@@ -1,8 +1,12 @@
 #### PREAMBLE ####
-# Creator: Matthew Wankiewicz
+# Purpose: Create a data set containing Lahman and Baseball Reference Data
+# Author: Matthew Wankiewicz
 # contact: matthew.wankiewicz@mail.utoronto.ca
+# Date: December 22, 2020
+# License: MIT
+# Prerequesites:
+# - none
 # This script scrapes tables from Baseball Reference's misc
-# data page
 
 # install.packages(tidyverse)
 library(tidyverse)
